@@ -1,0 +1,24 @@
+{
+  "name": "elm-webpack-loader",
+  "version": "0.0.1",
+  "description": "Webpack loader for the Elm programming language.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rtfeldman/elm-webpack-loader.git"
+  },
+  "keywords": [
+    "elm",
+    "webpack",
+    "loader"
+  ],
+  "author": "Richard Feldman",
+  "license": "Apache2",
+  "bugs": {
+    "url": "https://github.com/rtfeldman/elm-webpack-loader/issues"
+  },
+  "homepage": "https://github.com/rtfeldman/elm-webpack-loader"
+}

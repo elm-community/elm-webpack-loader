@@ -1,0 +1,26 @@
+{
+  "name": "elm-webpack-loader",
+  "version": "0.0.1",
+  "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
+  "authors": [
+    "Richard Feldman <richard.t.feldman@gmail.com>"
+  ],
+  "description": "Webpack loader for the Elm programming language.",
+  "main": "index.js",
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "elm",
+    "webpack",
+    "loader"
+  ],
+  "license": "Apache2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
