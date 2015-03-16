@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/rtfeldman/elm-webpack-loader/issues"
   },
-  "homepage": "https://github.com/rtfeldman/elm-webpack-loader"
+  "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
+  "dependencies": {
+    "loader-utils": "0.2.6",
+    "lodash": "3.5.0",
+    "node-elm-compiler": "0.0.3"
+  }
 }
