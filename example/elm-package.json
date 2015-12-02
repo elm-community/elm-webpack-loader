@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "summary": "Example using `elm-webpack-loader`.",
+  "repository": "https://github.com/rtfeldman/elm-webpack-loader.git",
+  "license": "BSD-3-Clause",
+  "source-directories": [
+    "."
+  ],
+  "exposed-modules": [
+  ],
+  "dependencies": {
+    "elm-lang/core": "2.1.0 <= v < 3.0.0",
+    "evancz/elm-html": "4.0.2 <= v < 5.0.0"
+  },
+  "elm-version": "0.15.1 <= v < 0.16.0"
+}
