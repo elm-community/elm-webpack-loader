@@ -1,7 +1,7 @@
 {
   "name": "elm-webpack-loader",
   "version": "0.4.0",
-  "description": "Webpack loader for the Elm programming language. (Elm version 0.15.1)",
+  "description": "Webpack loader for the Elm programming language.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,6 +24,6 @@
   "dependencies": {
     "loader-utils": "0.2.11",
     "lodash": "3.10.1",
-    "node-elm-compiler": "0.4.0"
+    "node-elm-compiler": "2.1.0",
   }
 }
