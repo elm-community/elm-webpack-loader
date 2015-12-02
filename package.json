@@ -16,7 +16,7 @@
     "loader"
   ],
   "author": "Richard Feldman",
-  "license": "Apache2",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/rtfeldman/elm-webpack-loader/issues"
   },

@@ -15,7 +15,7 @@
     "webpack",
     "loader"
   ],
-  "license": "Apache2",
+  "license": "BSD-3-Clause",
   "ignore": [
     "**/.*",
     "node_modules",
