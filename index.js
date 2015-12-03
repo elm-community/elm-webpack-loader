@@ -6,7 +6,8 @@ var loaderUtils = require("loader-utils");
 var fs          = require("fs");
 
 var defaultOptions = {
-  yes: true
+  yes: true,
+  output: "tmp/[name].js"
 };
 
 module.exports = function(source) {
@@ -22,12 +23,19 @@ module.exports = function(source) {
   var emitError   = this.emitError.bind(this);
 
   var sourceFiles = loaderUtils.getRemainingRequest(this);
-  var output      = loaderUtils.getCurrentRequest(this);
+  var request     = loaderUtils.getCurrentRequest(this);
   var options     = loaderUtils.parseQuery(this.query);
-  var compileOpts = _.defaults({output: output, warn: emitWarning}, options, defaultOptions);
+
+  var output = loaderUtils.interpolateName(this, defaultOptions.output, {
+    context: options.context || this.options.context,
+    content: source,
+    regExp:  options.regExp
+  });
+
+  var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
 
   try {
-    compile(sourceFiles, compileOpts).on("close", function(exitCode) {
+    compile(sourceFiles, compileOpts).on("close", function(output, exitCode) {
       if (exitCode === 0) {
         fs.readFile(output, "utf8", function(err, result) {
           var resultWithExports = [result, "module.exports = Elm;"].join("\n");
@@ -37,7 +45,7 @@ module.exports = function(source) {
       } else {
         callback("Compiler process exited with code " + exitCode);
       }
-    });
+    }.bind(this, output));
   } catch (err) {
     callback("An exception occurred when attempting to run the Elm compiler.");
   }
