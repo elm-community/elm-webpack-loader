@@ -23,7 +23,6 @@ module.exports = function(source) {
   var emitError   = this.emitError.bind(this);
 
   var sourceFiles = loaderUtils.getRemainingRequest(this);
-  var request     = loaderUtils.getCurrentRequest(this);
   var options     = loaderUtils.parseQuery(this.query);
 
   var output = loaderUtils.interpolateName(this, defaultOptions.output, {
