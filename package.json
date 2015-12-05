@@ -4,7 +4,7 @@
   "description": "Webpack loader for the Elm programming language.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests to speak of yet...\" && exit 0"
+    "test": "nodeunit test/loader.js"
   },
   "engines": {
     "node": ">=0.12.0"
@@ -28,5 +28,8 @@
     "loader-utils": "0.2.11",
     "lodash": "3.10.1",
     "node-elm-compiler": "2.1.0"
+  },
+  "devDependencies": {
+    "nodeunit": "^0.9"
   }
 }
