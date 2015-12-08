@@ -27,3 +27,9 @@ module.exports = {
   }
 };
 ```
+
+## Watch
+
+At the moment, the Elm compiler doesn't give any options to retrieve the
+imported Elm files. To support `webpack --watch`, this loader adds all `.elm`
+files in the path of the webpack entry file.
