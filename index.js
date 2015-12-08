@@ -4,11 +4,21 @@ var _           = require('lodash');
 var compile     = require("node-elm-compiler").compile;
 var loaderUtils = require("loader-utils");
 var fs          = require("fs");
+var path        = require('path');
+var glob        = require('glob');
 
 var defaultOptions = {
   yes: true,
   output: "tmp/[name].js"
 };
+
+var addDependencies = function (basePath, addDependency) {
+  glob(basePath + "/**/*.elm", function (err, files) {
+    for (var i = 0; i < files.length; i++) {
+      addDependency(files[i]);
+    }
+  });
+}
 
 module.exports = function(source) {
   this.cacheable && this.cacheable();
@@ -34,6 +44,7 @@ module.exports = function(source) {
   var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
 
   try {
+    addDependencies(path.dirname(sourceFiles), this.addDependency);
     compile(sourceFiles, compileOpts).on("close", function(output, exitCode) {
       if (exitCode === 0) {
         fs.readFile(output, "utf8", function(err, result) {
