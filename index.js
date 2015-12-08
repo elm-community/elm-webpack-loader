@@ -1,7 +1,7 @@
 'use strict';
 
 var _           = require('lodash');
-var compile     = require("node-elm-compiler").compile;
+var compile     = require("node-elm-compiler").compileToString;
 var loaderUtils = require("loader-utils");
 var fs          = require("fs");
 
@@ -33,19 +33,11 @@ module.exports = function(source) {
 
   var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
 
-  try {
-    compile(sourceFiles, compileOpts).on("close", function(output, exitCode) {
-      if (exitCode === 0) {
-        fs.readFile(output, "utf8", function(err, result) {
-          var resultWithExports = [result, "module.exports = Elm;"].join("\n");
+  compile(sourceFiles, compileOpts).then(function(result) {
+    var resultWithExports = [result, "module.exports = Elm;"].join("\n");
+    callback(null, resultWithExports);
+  }, function(err) {
+    callback("Compiler process exited with code " + exitCode);
+  });
 
-          callback(err, resultWithExports);
-        });
-      } else {
-        callback("Compiler process exited with code " + exitCode);
-      }
-    }.bind(this, output));
-  } catch (err) {
-    callback("An exception occurred when attempting to run the Elm compiler.");
-  }
 }
