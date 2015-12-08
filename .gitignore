@@ -1,4 +1,6 @@
-elm-stuff
-node_modules
-tmp
+elm-stuff/
+node_modules/
+tmp/
 /elm-package.json
+/test/expected/*
+!/test/expected/.keep
