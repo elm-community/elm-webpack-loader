@@ -4,7 +4,8 @@
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "dependencies": {
     "webpack": "^1.12.0",
