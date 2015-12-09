@@ -7,7 +7,7 @@ var fs          = require("fs");
 
 var defaultOptions = {
   yes: true,
-  output: "tmp/[name].js"
+  output: "[name].js"
 };
 
 module.exports = function(source) {
