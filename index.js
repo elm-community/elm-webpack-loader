@@ -1,14 +1,17 @@
 'use strict';
 
-var _           = require('lodash');
-var compile     = require("node-elm-compiler").compileToString;
-var loaderUtils = require("loader-utils");
-var fs          = require("fs");
+var _            = require('lodash');
+var elmCompiler  = require("node-elm-compiler");
+var fs           = require("fs");
+var loaderUtils  = require("loader-utils");
 
 var defaultOptions = {
+  cache: false,
   yes: true,
   output: "[name].js"
 };
+
+var cachedDependencies = [];
 
 module.exports = function(source) {
   this.cacheable && this.cacheable();
@@ -32,8 +35,18 @@ module.exports = function(source) {
   });
 
   var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
+  delete compileOpts.cache;
 
-  compile(sourceFiles, compileOpts).then(function(result) {
+  if (!options.cache || cachedDependencies.length == 0) {
+    elmCompiler.findAllDependencies(sourceFiles).then(function(dependencies) {
+      cachedDependencies = dependencies;
+      for (var i = 0; i < dependencies.length; i++) {
+        this.addDependency(dependencies[i]);
+      }
+    }.bind(this));
+  }
+
+  elmCompiler.compileToString(sourceFiles, compileOpts).then(function(result) {
     var resultWithExports = [result, "module.exports = Elm;"].join("\n");
     callback(null, resultWithExports);
   }, function(err) {

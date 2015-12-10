@@ -28,6 +28,24 @@ module.exports = {
 };
 ```
 
+### Options
+
+#### Cache (default false)
+
+You can add `cache=true` to the loader:
+
+```js
+  ...
+  loader: 'elm-webpack?cache=true'
+  ...
+```
+
+If you add this, when using `npm run watch`, the loader will only load the
+dependencies at startup. This could be performance improvement, but know that
+new files won't be picked up and so won't be watched until you restart webpack.
+
+This flag doesn't matter if you don't use watch mode.
+
 ## Notes
 
 ### Example
