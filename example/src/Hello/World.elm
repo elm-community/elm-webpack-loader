@@ -1,3 +1,4 @@
 module Hello.World where
+import Hello.Again as Again
 
-hello = "Hello, World!"
+hello = "Hello, World! " ++ Again.hello
