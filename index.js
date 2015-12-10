@@ -1,9 +1,10 @@
 'use strict';
 
-var _           = require('lodash');
-var compile     = require("node-elm-compiler").compileToString;
-var loaderUtils = require("loader-utils");
-var fs          = require("fs");
+var _                   = require('lodash');
+var compile             = require("node-elm-compiler").compileToString;
+var findAllDependencies = require('node-elm-compiler').findAllDependencies;
+var fs                  = require("fs");
+var loaderUtils         = require("loader-utils");
 
 var defaultOptions = {
   yes: true,
@@ -32,6 +33,12 @@ module.exports = function(source) {
   });
 
   var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
+
+  findAllDependencies(sourceFiles).then(function(dependencies) {
+    for (var i = 0; i < dependencies.length; i++) {
+      this.addDependency(dependencies[i]);
+    }
+  }.bind(this));
 
   compile(sourceFiles, compileOpts).then(function(result) {
     var resultWithExports = [result, "module.exports = Elm;"].join("\n");
