@@ -6,9 +6,12 @@ var fs           = require("fs");
 var loaderUtils  = require("loader-utils");
 
 var defaultOptions = {
+  cache: false,
   yes: true,
   output: "[name].js"
 };
+
+var cachedDependencies = [];
 
 module.exports = function(source) {
   this.cacheable && this.cacheable();
@@ -32,12 +35,16 @@ module.exports = function(source) {
   });
 
   var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
+  delete compileOpts.cache;
 
-  elmCompiler.findAllDependencies(sourceFiles).then(function(dependencies) {
-    for (var i = 0; i < dependencies.length; i++) {
-      this.addDependency(dependencies[i]);
-    }
-  }.bind(this));
+  if (!options.cache || cachedDependencies.length == 0) {
+    elmCompiler.findAllDependencies(sourceFiles).then(function(dependencies) {
+      cachedDependencies = dependencies;
+      for (var i = 0; i < dependencies.length; i++) {
+        this.addDependency(dependencies[i]);
+      }
+    }.bind(this));
+  }
 
   elmCompiler.compileToString(sourceFiles, compileOpts).then(function(result) {
     var resultWithExports = [result, "module.exports = Elm;"].join("\n");
