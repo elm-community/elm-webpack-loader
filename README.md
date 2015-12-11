@@ -58,7 +58,9 @@ npm install
 npm run build
 ```
 
-or run with `npm run watch` to use `webpack --watch`.
+You can have webpack watch for changes with: `npm run watch`
+
+You can run the webpack dev server with: `npm run dev`
 
 ### noParse
 
