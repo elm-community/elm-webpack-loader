@@ -1,5 +1,4 @@
 var path = require('path');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -17,6 +16,11 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.html$/,
+        exclude: /node_modules/,
+        loader: 'file?name=[name].[ext]'
+      },
+      {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         loader: '../../index.js'
@@ -29,12 +33,5 @@ module.exports = {
   devServer: {
     inline: true,
     stats: 'errors-only'
-  },
-
-  plugins: [
-    new HtmlwebpackPlugin({
-      template: 'src/index.html',
-      inject: 'body'
-    })
-  ]
+  }
 };
