@@ -63,7 +63,7 @@ or run with `npm run watch` to use `webpack --watch`.
 ### noParse
 
 Webpack can complain about precompiled files (files compiled by `elm-make`).
-You can silence this warning with (noParse)[https://webpack.github.io/docs/configuration.html#module-noparse]. You can see it in use in the example.
+You can silence this warning with [noParse](https://webpack.github.io/docs/configuration.html#module-noparse). You can see it in use in the example.
 
 ```js
   module: {
