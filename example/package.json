@@ -5,10 +5,12 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --port 3000"
   },
   "dependencies": {
     "webpack": "^1.12.0",
-    "file-loader": "^0.8.0"
+    "webpack-dev-server": "^1.14.0",
+    "html-webpack-plugin": "^1.7.0"
   }
 }
