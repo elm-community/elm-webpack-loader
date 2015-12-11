@@ -1,6 +1,5 @@
 'use strict';
 
-require('./index.html');
 var Elm = require('./Main');
 
-Elm.fullscreen(Elm.Main);
+Elm.embed(Elm.Main, document.getElementById('main'));
