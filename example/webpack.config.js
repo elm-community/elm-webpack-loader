@@ -9,6 +9,7 @@ module.exports = {
   },
 
   resolve: {
+    modulesDirectories: ['node_modules'],
     extensions: ['', '.js', '.elm']
   },
 
@@ -27,5 +28,10 @@ module.exports = {
     ],
 
     noParse: /\.elm$/
+  },
+
+  devServer: {
+    inline: true,
+    stats: 'errors-only'
   }
 };
