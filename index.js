@@ -1,14 +1,13 @@
 'use strict';
 
 var _            = require('lodash');
-var elmCompiler  = require("node-elm-compiler");
-var fs           = require("fs");
-var loaderUtils  = require("loader-utils");
+var elmCompiler  = require('node-elm-compiler');
+var loaderUtils  = require('loader-utils');
 
 var defaultOptions = {
   cache: false,
   yes: true,
-  output: "[name].js"
+  output: '[name].js'
 };
 
 var cachedDependencies = [];
@@ -19,11 +18,10 @@ module.exports = function(source) {
   var callback = this.async();
 
   if (!callback) {
-    throw "elm-webpack-loader currently only supports async mode."
+    throw 'elm-webpack-loader currently only supports async mode.'
   }
 
   var emitWarning = this.emitWarning.bind(this);
-  var emitError   = this.emitError.bind(this);
 
   var sourceFiles = loaderUtils.getRemainingRequest(this);
   var options     = loaderUtils.parseQuery(this.query);
@@ -47,10 +45,10 @@ module.exports = function(source) {
   }
 
   elmCompiler.compileToString(sourceFiles, compileOpts).then(function(result) {
-    var resultWithExports = [result, "module.exports = Elm;"].join("\n");
+    var resultWithExports = [result, 'module.exports = Elm;'].join('\n');
     callback(null, resultWithExports);
-  }, function(err) {
-    callback("Compiler process exited with code " + exitCode);
+  }, function(exitCode) {
+    callback('Compiler process exited with code ' + exitCode);
   });
 
 }

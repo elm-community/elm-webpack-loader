@@ -1,4 +1,3 @@
-var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var assert = require('chai').assert;
