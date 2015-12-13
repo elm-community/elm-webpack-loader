@@ -1,11 +1,13 @@
 var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
+var assert = require('chai').assert;
 var compiler = require('node-elm-compiler');
 var loader = require('../index.js');
 
-var badSource = path.join(__dirname, './fixtures/Bad.elm');
-var goodSource = path.join(__dirname, './fixtures/Good.elm');
+var fixturesDir = path.join(__dirname, 'fixtures');
+var badSource = path.join(fixturesDir, 'Bad.elm');
+var goodSource = path.join(fixturesDir, 'Good.elm');
 
 var toString = Object.prototype.toString;
 
@@ -17,25 +19,15 @@ var hash = function (data) {
   return crypto.createHash('md5').update(data).digest('hex');
 };
 
-var compile = function (filename, callback) {
-  var output = 'test/expected/' + path.basename(filename, '.elm') + '.js';
-
-  compiler.compile([filename], {
-    output: output,
-    yes: true
-  }).on('close', function (exit) {
-    if (exit === 0) {
-      var contents = fs.readFileSync(output, 'utf-8');
-      contents = [contents, 'module.exports = Elm;'].join('\n');
-      callback(null, contents);
-    } else {
-      callback('Error compiling file.');
-    }
-  });
+var compile = function (filename) {
+  return compiler.compileToString([filename], {yes: true, cwd: fixturesDir})
+    .then(function (data) {
+      return [data.toString(), 'module.exports = Elm;'].join('\n');
+    });
 }
 
 // Mock of webpack's loader context.
-var mock = function (source ,query, opts, callback) {
+var mock = function (source, query, opts, callback) {
   var emittedError;
   var emittedWarning;
 
@@ -64,64 +56,73 @@ var mock = function (source ,query, opts, callback) {
   }
 
   if (opts) {
-    result.options.ulmus = opts;
+    result.options.elm = opts;
   }
 
   return result;
 };
 
-module.exports.test = {
-  'sync mode': {
-    'throws': function (test) {
-      var context = mock(goodSource);
+describe('sync mode', function () {
+  var context;
 
-      try {
-        loader.call(context, goodSource);
-      } catch (err) {
-        test.done();
-      }
-    }
-  },
+  it('throws', function () {
+    context = mock(goodSource);
 
-  'async mode': {
-    'compiles the resource': function (test) {
-      var context;
-
-      var callback = function (loaderErr, loaderResult) {
-        compile([goodSource], function (compilerErr, compilerResult) {
-          test.equal(null, loaderErr);
-          test.equal(hash(loaderResult), hash(compilerResult));
-          test.done();
-        });
-      };
-
-      context = mock(goodSource, null, null, callback);
+    assert.throw(function () {
       loader.call(context, goodSource);
-    },
+    }, /currently only supports async mode/);
+  });
+});
 
-    'emits warnings': function (test) {
-      var context;
+describe('async mode', function () {
+  var context;
 
-      var callback = function () {
-        test.equal(undefined, context.emittedWarning());
-        test.done();
-      };
+  // Download of Elm can take a while.
+  this.timeout(300000);
 
-      context = mock(badSource, null, null, callback);
-      loader.call(context, badSource);
-    },
+  it('compiles the resource', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
 
-    'can emit errors instead of warnings': function (test) {
-      var context;
+    var callback = function (loaderErr, loaderResult) {
+      compile(goodSource).then(function (compilerResult) {
+        assert.equal(hash(loaderResult), hash(compilerResult));
+        done();
+      });
+    };
 
-      var callback = function () {
-        test.equal(undefined, context.emittedError());
-        test.done();
-      };
+    context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
+  });
 
-      context = mock(badSource, null, {emitErrors: true}, callback);
-      loader.call(context, badSource);
-    }
-  }
+  it('emits warnings', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
 
-};
+    var callback = function () {
+      assert.equal(undefined, context.emittedWarning());
+      done();
+    };
+
+    context = mock(badSource, null, options, callback);
+    loader.call(context, badSource);
+  });
+
+  it('can emit errors instead of warnings', function (done) {
+    var options = {
+      cwd: fixturesDir,
+      emitErrors: true
+    };
+
+    var callback = function () {
+      assert.equal(undefined, context.emittedError());
+      done();
+    };
+
+    context = mock(badSource, null, options, callback);
+    loader.call(context, badSource);
+  });
+
+});
