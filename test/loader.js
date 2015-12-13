@@ -7,6 +7,7 @@ var loader = require('../index.js');
 var fixturesDir = path.join(__dirname, 'fixtures');
 var badSource = path.join(fixturesDir, 'Bad.elm');
 var goodSource = path.join(fixturesDir, 'Good.elm');
+var goodDependency = path.join(fixturesDir, 'GoodDependency.elm');
 
 var toString = Object.prototype.toString;
 
@@ -29,6 +30,7 @@ var compile = function (filename) {
 var mock = function (source, query, opts, callback) {
   var emittedError;
   var emittedWarning;
+  var addedDependencies = [];
 
   var result = {
     loaders: [],
@@ -44,7 +46,9 @@ var mock = function (source, query, opts, callback) {
     emitWarning: function (warn) { emittedWarning = warn; },
     emittedWarning: function () { return emittedWarning; },
 
-    addDependency: function () {},
+    addDependency: function (dep) { addedDependencies.push(dep); },
+    addedDependencies: function () { return addedDependencies; },
+
     cacheable: function () {},
 
     options: {}
@@ -95,28 +99,42 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
-  it('emits warnings', function (done) {
+  it('adds dependencies', function (done) {
     var options = {
       cwd: fixturesDir
     };
 
     var callback = function () {
-      assert.equal(undefined, context.emittedWarning());
+      assert.include(context.addedDependencies(), goodDependency);
       done();
     };
 
-    context = mock(badSource, null, options, callback);
-    loader.call(context, badSource);
+    context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
   });
 
-  it('can emit errors instead of warnings', function (done) {
+  it('emits warnings for unknown compiler options', function (done) {
     var options = {
       cwd: fixturesDir,
-      emitErrors: true
+      foo: 'bar'
     };
 
     var callback = function () {
-      assert.equal(undefined, context.emittedError());
+      assert.match(context.emittedWarning(), /unknown Elm compiler option/i);
+      done();
+    };
+
+    context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
+  });
+
+  xit('emits errors for incorrect source files', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
+
+    var callback = function () {
+      assert.match(context.emittedError(), /syntax problem/i);
       done();
     };
 

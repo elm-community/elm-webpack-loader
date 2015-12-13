@@ -1,3 +1,5 @@
 module Good where
 
-add x y = x + y
+import GoodDependency exposing ( add )
+
+addSquares x y = add (x^2) (y^2)
