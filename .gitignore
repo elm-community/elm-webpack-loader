@@ -1,7 +1,2 @@
 elm-stuff/
 node_modules/
-tmp/
-/elm-package.json
-/test/expected/*
-/test/fixtures/elm-package.json
-!/test/expected/.keep

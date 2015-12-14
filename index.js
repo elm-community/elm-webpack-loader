@@ -1,56 +1,55 @@
 'use strict';
 
-var _            = require('lodash');
-var elmCompiler  = require("node-elm-compiler");
-var fs           = require("fs");
-var loaderUtils  = require("loader-utils");
-
-var defaultOptions = {
-  cache: false,
-  yes: true,
-  output: "[name].js"
-};
+var _ = require('lodash');
+var loaderUtils = require('loader-utils');
+var elmCompiler = require('node-elm-compiler');
 
 var cachedDependencies = [];
 
-module.exports = function(source) {
+var defaultOptions = {
+  cache: false,
+  yes: true
+};
+
+var getInput = function() {
+  return loaderUtils.getRemainingRequest(this);
+};
+
+var getOptions = function() {
+  var globalOptions = this.options.elm || {};
+  var loaderOptions = loaderUtils.parseQuery(this.query);
+  return _.extend({
+    warn: this.emitWarning
+  }, defaultOptions, globalOptions, loaderOptions);
+};
+
+var addDependencies = function(dependencies) {
+  cachedDependencies = dependencies;
+  dependencies.forEach(this.addDependency.bind(this));
+};
+
+module.exports = function() {
   this.cacheable && this.cacheable();
 
   var callback = this.async();
 
   if (!callback) {
-    throw "elm-webpack-loader currently only supports async mode."
+    throw 'elm-webpack-loader currently only supports async mode.'
   }
 
-  var emitWarning = this.emitWarning.bind(this);
-  var emitError   = this.emitError.bind(this);
+  var input = getInput.call(this);
+  var options = getOptions.call(this);
 
-  var sourceFiles = loaderUtils.getRemainingRequest(this);
-  var options     = loaderUtils.parseQuery(this.query);
-
-  var output = loaderUtils.interpolateName(this, defaultOptions.output, {
-    context: options.context || this.options.context,
-    content: source,
-    regExp:  options.regExp
-  });
-
-  var compileOpts = _.defaults({ output: output, warn: emitWarning }, options, defaultOptions);
-  delete compileOpts.cache;
-
-  if (!options.cache || cachedDependencies.length == 0) {
-    elmCompiler.findAllDependencies(sourceFiles).then(function(dependencies) {
-      cachedDependencies = dependencies;
-      for (var i = 0; i < dependencies.length; i++) {
-        this.addDependency(dependencies[i]);
-      }
-    }.bind(this));
+  if (!options.cache || cachedDependencies.length === 0) {
+    elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
   }
 
-  elmCompiler.compileToString(sourceFiles, compileOpts).then(function(result) {
-    var resultWithExports = [result, "module.exports = Elm;"].join("\n");
-    callback(null, resultWithExports);
-  }, function(err) {
-    callback("Compiler process exited with code " + exitCode);
-  });
-
+  elmCompiler.compileToString(input, options)
+    .then(function(result) {
+      var resultWithExports = [result, 'module.exports = Elm;'].join('\n');
+      callback(null, resultWithExports);
+    })
+    .catch(function(err) {
+      callback('Compiler process exited with error ' + err);
+    });
 }
