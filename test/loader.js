@@ -81,7 +81,7 @@ describe('async mode', function () {
   var context;
 
   // Download of Elm can take a while.
-  this.timeout(300000);
+  this.timeout(600000);
 
   it('compiles the resource', function (done) {
     var options = {
