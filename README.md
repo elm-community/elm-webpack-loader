@@ -46,6 +46,19 @@ new files won't be picked up and so won't be watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
+#### cwd (default null)
+
+You can add `cwd=elmSource` to the loader:
+```js
+var elmSource = __dirname + '/elm/path/in/project'
+  ...
+  loader: 'elm-webpack?cwd=' + elmSource
+  ...
+```
+
+You can use this to specify a custom location within your project for your elm files. Note, this
+will cause the compiler to look for **all** elm source files in the specified directory.
+
 ## Notes
 
 ### Example
