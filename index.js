@@ -8,7 +8,8 @@ var cachedDependencies = [];
 
 var defaultOptions = {
   cache: false,
-  yes: true
+  yes: true,
+  warn: true
 };
 
 var getInput = function() {
