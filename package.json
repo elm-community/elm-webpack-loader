@@ -28,7 +28,7 @@
   "dependencies": {
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.1",
-    "node-elm-compiler": "^2.3.3"
+    "node-elm-compiler": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",
