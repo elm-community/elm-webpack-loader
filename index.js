@@ -8,7 +8,8 @@ var cachedDependencies = [];
 
 var defaultOptions = {
   cache: false,
-  yes: true
+  yes: true,
+  warn: true
 };
 
 var getInput = function() {
@@ -19,7 +20,7 @@ var getOptions = function() {
   var globalOptions = this.options.elm || {};
   var loaderOptions = loaderUtils.parseQuery(this.query);
   return _.extend({
-    warn: this.emitWarning
+    emitWarning: this.emitWarning
   }, defaultOptions, globalOptions, loaderOptions);
 };
 
