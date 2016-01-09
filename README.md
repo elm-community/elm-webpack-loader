@@ -86,3 +86,14 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
     noParse: [/.elm$/]
   }
 ```
+
+## Revisions
+
+### 2.0.0
+
+Change `warn` to be a pass-through compiler flag rather than a way to specify
+logging behavior.
+
+### 1.0.0
+
+Initial stable release.
