@@ -1,6 +1,6 @@
 {
   "name": "elm-webpack-loader",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Webpack loader for the Elm programming language.",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   "dependencies": {
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.1",
-    "node-elm-compiler": "^2.3.2"
+    "node-elm-compiler": "^2.3.3"
   },
   "devDependencies": {
     "chai": "^3.4.1",
