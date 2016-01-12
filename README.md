@@ -28,6 +28,8 @@ module.exports = {
 };
 ```
 
+See the [examples](#examples) section below for the complete webpack configuration. 
+
 ### Options
 
 #### Cache (default false)
@@ -74,6 +76,8 @@ npm run build
 You can have webpack watch for changes with: `npm run watch`
 
 You can run the webpack dev server with: `npm run dev`
+
+For a full featured example project that uses elm-webpack-loader see [pmdesgn/elm-webpack-starter](https://github.com/pmdesgn/elm-webpack-starter) .
 
 ### noParse
 
