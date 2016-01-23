@@ -28,7 +28,7 @@ module.exports = {
 };
 ```
 
-See the [examples](#examples) section below for the complete webpack configuration. 
+See the [examples](#example) section below for the complete webpack configuration. 
 
 ### Options
 
