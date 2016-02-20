@@ -27,8 +27,8 @@
   "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
   "dependencies": {
     "loader-utils": "^0.2.11",
-    "lodash": "^3.10.1",
-    "node-elm-compiler": "^3.0.0"
+    "node-elm-compiler": "^3.0.0",
+    "object-assign": "^4.0.1"
   },
   "devDependencies": {
     "chai": "^3.4.1",
