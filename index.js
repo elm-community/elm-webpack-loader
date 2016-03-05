@@ -34,19 +34,25 @@ module.exports = function() {
   var callback = this.async();
 
   if (!callback) {
-    throw 'elm-webpack-loader currently only supports async mode.'
+    throw 'elm-webpack-loader currently only supports async mode.';
   }
 
   var input = getInput.call(this);
   var options = getOptions.call(this);
 
-  if (!options.cache || cachedDependencies.length === 0) {
-    elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
-  }
+  var dependencies = Promise.resolve()
+    .then(function() {
+      if (!options.cache || cachedDependencies.length === 0) {
+        return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
+      }
+    }.bind(this));
 
-  elmCompiler.compileToString(input, options)
-    .then(function(result) {
-      var resultWithExports = [result, 'module.exports = Elm;'].join('\n');
+  var compilation = elmCompiler.compileToString(input, options);
+
+  Promise.all([dependencies, compilation])
+    .then(function(results) {
+      var output = results[1]; // compilation output
+      var resultWithExports = [output, 'module.exports = Elm;'].join('\n');
       callback(null, resultWithExports);
     })
     .catch(function(err) {
