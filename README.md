@@ -61,6 +61,18 @@ var elmSource = __dirname + '/elm/path/in/project'
 You can use this to specify a custom location within your project for your elm files. Note, this
 will cause the compiler to look for **all** elm source files in the specified directory.
 
+#### Upstream options
+
+All options are sent down as an `options` object to node-elm-compiler. For example, you can explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
+
+```js
+  ...
+  loader: 'elm-webpack?pathToMake=node_modules/.bin/elm-make',
+  ...
+```
+
+For a list all possible options, [consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/5a4cc71/index.js#L11-L19).
+
 ## Notes
 
 ### Example
