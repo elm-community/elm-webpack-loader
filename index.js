@@ -52,8 +52,7 @@ module.exports = function() {
   Promise.all([dependencies, compilation])
     .then(function(results) {
       var output = results[1]; // compilation output
-      var resultWithExports = [output, 'module.exports = Elm;'].join('\n');
-      callback(null, resultWithExports);
+      callback(null, output);
     })
     .catch(function(err) {
       callback('Compiler process exited with error ' + err);
