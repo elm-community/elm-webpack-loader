@@ -105,6 +105,10 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 ## Revisions
 
+### 3.0.0
+
+Support Elm 0.17, and remove obsolete `appendExport` option.
+
 ### 2.0.0
 
 Change `warn` to be a pass-through compiler flag rather than a way to specify
