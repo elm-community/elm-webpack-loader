@@ -22,7 +22,7 @@ var hash = function (data) {
 var compile = function (filename) {
   return compiler.compileToString([filename], {yes: true, cwd: fixturesDir})
     .then(function (data) {
-      return [data.toString(), 'module.exports = Elm;'].join('\n');
+      return data.toString();
     });
 }
 

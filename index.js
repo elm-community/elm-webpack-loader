@@ -8,7 +8,8 @@ var cachedDependencies = [];
 
 var defaultOptions = {
   cache: false,
-  yes: true
+  yes: true,
+  appendExport: false
 };
 
 var getInput = function() {
@@ -52,8 +53,12 @@ module.exports = function() {
   Promise.all([dependencies, compilation])
     .then(function(results) {
       var output = results[1]; // compilation output
-      var resultWithExports = [output, 'module.exports = Elm;'].join('\n');
-      callback(null, resultWithExports);
+      if (options.appendExport) {
+        var outputWithExport = [output, 'module.exports = Elm;'].join('\n');
+        callback(null, outputWithExport);
+      } else {
+        callback(null, output);
+      }
     })
     .catch(function(err) {
       callback('Compiler process exited with error ' + err);
