@@ -54,7 +54,7 @@ module.exports = function() {
     .then(function(results) {
       var output = results[1]; // compilation output
       if (options.appendExport) {
-        var outputWithExport = [output, 'module.exports = Elm;'].join('\n');
+        var outputWithExport = [output, 'module.exports = module.exports || Elm;'].join('\n');
         callback(null, outputWithExport);
       } else {
         callback(null, output);
