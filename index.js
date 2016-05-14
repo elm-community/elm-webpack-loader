@@ -56,6 +56,7 @@ module.exports = function() {
       callback(null, output);
     })
     .catch(function(err) {
-      callback('Compiler process exited with error ' + err);
+      err.message = 'Compiler process exited with error ' + err.message;
+      callback(err);
     });
 }
