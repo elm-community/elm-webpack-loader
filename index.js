@@ -44,7 +44,9 @@ module.exports = function() {
       if (!options.cache || cachedDependencies.length === 0) {
         return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
       }
-    }.bind(this));
+    }.bind(this))
+    .then(function(v) { return { kind: 'success', result: v }; })
+    .catch(function(v) { return { kind: 'error', error: v }; });
 
   var compilation = elmCompiler.compileToString(input, options)
     .then(function(v) { return { kind: 'success', result: v }; })
