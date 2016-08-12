@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 
@@ -18,7 +17,7 @@ var getInput = function() {
 var getOptions = function() {
   var globalOptions = this.options.elm || {};
   var loaderOptions = loaderUtils.parseQuery(this.query);
-  return _.extend({
+  return Object.assign({
     emitWarning: this.emitWarning
   }, defaultOptions, globalOptions, loaderOptions);
 };
