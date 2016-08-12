@@ -109,6 +109,10 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 ## Revisions
 
+### 3.0.4
+
+Fix potential race condition between dependency checking and compilation.
+
 ### 3.0.3
 
 Use node-elm-compiler 4.0.1+ for important bugfix.
