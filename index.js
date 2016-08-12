@@ -46,16 +46,18 @@ module.exports = function() {
       }
     }.bind(this));
 
-  var compilation = elmCompiler.compileToString(input, options);
+  var compilation = elmCompiler.compileToString(input, options)
+    .then(function(v) { return { kind: 'success', result: v }; })
+    .catch(function(v) { return { kind: 'error', error: v }; });
 
   Promise.all([dependencies, compilation])
     .then(function(results) {
       var output = results[1]; // compilation output
-
-      callback(null, output);
-    })
-    .catch(function(err) {
-      err.message = 'Compiler process exited with error ' + err.message;
-      callback(err);
+      if (output.kind == 'success') {
+        callback(null, output.result);
+      } else {
+        output.error.message = 'Compiler process exited with error ' + output.error.message;
+        callback(output.error);
+      }
     });
 }
