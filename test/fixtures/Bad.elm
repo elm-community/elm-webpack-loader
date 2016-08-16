@@ -1,3 +1,3 @@
-module Bad where
+module Bad exposing (..)
 
 add x y = x +
