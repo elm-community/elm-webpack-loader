@@ -2,6 +2,7 @@
 
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
+var readdirp = require('readdirp');
 
 var cachedDependencies = [];
 
@@ -42,7 +43,21 @@ module.exports = function() {
   var dependencies = Promise.resolve()
     .then(function() {
       if (!options.cache || cachedDependencies.length === 0) {
-        return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
+        var readdirpOptions = {
+          root: '.',
+          fileFilter: '*.elm',
+          directoryFilter: ['!.git', '!node_modules', '!elm-stuff']
+        }
+        readdirp(readdirpOptions, function (errors, res) {
+          if (errors) {
+            errors.forEach(function (err) {
+              console.error('Error: ', err);
+            });
+          }
+          var filePaths =
+            res.files.map(function(fileObject){ return fileObject.fullPath; });
+          addDependencies.bind(this)(filePaths);
+        }.bind(this));
       }
     }.bind(this))
     .then(function(v) { return { kind: 'success', result: v }; })
