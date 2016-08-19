@@ -1,4 +1,4 @@
-module Good where
+module Good exposing (..)
 
 import GoodDependency exposing ( add )
 
