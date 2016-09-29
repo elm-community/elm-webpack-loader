@@ -10,8 +10,25 @@ var defaultOptions = {
   yes: true
 };
 
-var getInput = function() {
-  return this.resourcePath;
+var getInput = function (options) {
+  var input = this.resourcePath;
+
+  if (options.modules) {
+    var modules = options.modules;
+
+    if (!Array.isArray(modules)) {
+      throw new Error('modules option must be an array');
+    }
+
+    if (modules.indexOf(input) === -1) {
+      modules.push(input);
+    }
+
+    input = modules;
+
+    delete options.modules;
+  }
+  return input;
 };
 
 var getOptions = function() {
@@ -36,8 +53,8 @@ module.exports = function() {
     throw 'elm-webpack-loader currently only supports async mode.';
   }
 
-  var input = getInput.call(this);
-  var options = getOptions.call(this);
+  var options = getOptions.call(this);  
+  var input = getInput.call(this, options);
 
   var dependencies = Promise.resolve()
     .then(function() {
