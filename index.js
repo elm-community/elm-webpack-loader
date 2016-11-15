@@ -6,6 +6,7 @@ var elmCompiler = require('node-elm-compiler');
 var cachedDependencies = [];
 
 var defaultOptions = {
+	debug: false,
   cache: false,
   yes: true
 };
