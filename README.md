@@ -109,6 +109,10 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 ## Revisions
 
+### 3.1.0
+
+Add support for `--debug` via `node-elm-compiler`
+
 ### 3.0.6
 
 Allow version bumps of node-elm-compiler.
