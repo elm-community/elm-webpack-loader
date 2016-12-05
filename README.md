@@ -75,7 +75,7 @@ All options are sent down as an `options` object to node-elm-compiler. For examp
   ...
 ```
 
-For a list all possible options, [consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/5a4cc71/index.js#L11-L19).
+For a list all possible options, [consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/3fde73d/index.js#L12-L23).
 
 ## Notes
 
