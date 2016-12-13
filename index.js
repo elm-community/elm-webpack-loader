@@ -2,6 +2,7 @@
 
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
+var yargs = require('yargs');
 
 var cachedDependencies = [];
 
@@ -23,8 +24,16 @@ var getOptions = function() {
 };
 
 var addDependencies = function(dependencies) {
-  cachedDependencies = dependencies;
+  cachedDependencies = cachedDependencies.concat(dependencies);
   dependencies.forEach(this.addDependency.bind(this));
+};
+
+var isInWatchMode = function(){
+  var argv = yargs(process.argv)
+      .alias('w', 'watch')
+      .argv;
+
+  return typeof argv.watch !== "undefined" && argv.watch;
 };
 
 module.exports = function() {
@@ -39,22 +48,31 @@ module.exports = function() {
   var input = getInput.call(this);
   var options = getOptions.call(this);
 
-  var dependencies = Promise.resolve()
-    .then(function() {
-      if (!options.cache || cachedDependencies.length === 0) {
-        return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
-      }
-    }.bind(this))
-    .then(function(v) { return { kind: 'success', result: v }; })
-    .catch(function(v) { return { kind: 'error', error: v }; });
-
   var compilation = elmCompiler.compileToString(input, options)
     .then(function(v) { return { kind: 'success', result: v }; })
     .catch(function(v) { return { kind: 'error', error: v }; });
 
-  Promise.all([dependencies, compilation])
+  var promises = [compilation];
+
+  // we only need to track deps if we are in watch mode
+  // otherwise, we trust elm to do it's job
+  if (isInWatchMode()){
+    var dependencies = Promise.resolve()
+      .then(function() {
+        if (!options.cache || cachedDependencies.length === 0) {
+          return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
+        }
+      }.bind(this))
+      .then(function(v) { return { kind: 'success', result: v }; })
+      .catch(function(v) { return { kind: 'error', error: v }; });
+
+    promises.push(dependencies);
+  }
+
+
+  Promise.all(promises)
     .then(function(results) {
-      var output = results[1]; // compilation output
+      var output = results[0]; // compilation output
       if (output.kind == 'success') {
         callback(null, output.result);
       } else {

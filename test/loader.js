@@ -27,7 +27,7 @@ var compile = function (filename) {
 }
 
 // Mock of webpack's loader context.
-var mock = function (source, query, opts, callback) {
+var mock = function (source, query, opts, callback, watchMode) {
   var emittedError;
   var emittedWarning;
   var addedDependencies = [];
@@ -60,6 +60,11 @@ var mock = function (source, query, opts, callback) {
 
   if (opts) {
     result.options.elm = opts;
+  }
+
+  if (watchMode) {
+    result.isInWatchMode = function() { return true; };
+    result.argv = {watch : true};
   }
 
   return result;
@@ -99,17 +104,35 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
-  it('adds dependencies', function (done) {
+  it('does not add dependencies in normal mode', function (done) {
     var options = {
       cwd: fixturesDir
     };
 
+    process.argv = [];
     var callback = function () {
-      assert.include(context.addedDependencies(), goodDependency);
+      assert.equal(context.addedDependencies().length, 0);
       done();
     };
 
     context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
+  });
+
+  it('does add dependencies in watch mode', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
+
+    process.argv = [ "--watch" ];
+    var callback = function () {
+      console.log(context.addedDependencies())
+      assert.equal(context.addedDependencies().length, 1);
+      assert.include(context.addedDependencies(), goodDependency);
+      done();
+    };
+
+    context = mock(goodSource, null, options, callback, true);
     loader.call(context, goodSource);
   });
 

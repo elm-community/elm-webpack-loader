@@ -26,7 +26,8 @@
   "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
   "dependencies": {
     "loader-utils": "^0.2.11",
-    "node-elm-compiler": "^4.2.0"
+    "node-elm-compiler": "^4.2.0",
+    "yargs": "^6.5.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",
