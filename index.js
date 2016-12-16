@@ -5,9 +5,9 @@ var path = require('path')
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
-var glob = require("glob");
 
 var cachedDependencies = [];
+var cachedDirDependencies = [];
 
 var defaultOptions = {
   cache: false,
@@ -31,6 +31,11 @@ var addDependencies = function(dependencies) {
   dependencies.forEach(this.addDependency.bind(this));
 };
 
+var addDirDependency = function(dirs){
+  cachedDirDependencies = cachedDirDependencies.concat(dirs);
+  dirs.forEach(this.addContextDependency.bind(this));
+};
+
 var isInWatchMode = function(){
   var argv = yargs(process.argv)
       .alias('w', 'watch')
@@ -45,19 +50,11 @@ var filesToWatch = function(cwd){
   var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
   var elmPackage = JSON.parse(readFile);
 
-  var paths = [].concat(elmPackage["source-directories"].map(function(dir){
-    var finalPath = path.join(cwd, dir);
-    var options = {
-      cwd: finalPath,
-      ignore: "elm-stuff/**",
-      absolute: true
-    };
-    return glob.sync("**/*.elm", options).concat(
-      glob.sync("Native/**/*.js", options)
-    );
-  }))[0];
+  var elmPackage = JSON.parse(readFile);
 
-  return paths
+  var paths = elmPackage["source-directories"];
+
+  return paths;
 };
 
 module.exports = function() {
@@ -83,8 +80,11 @@ module.exports = function() {
   if (isInWatchMode()){
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
-      var things = filesToWatch(options.cwd);
-      addDependencies.bind(this)(things);
+      // watch elm-package.json
+      addDependencies.bind(this)([path.join(options.cwd, "elm-package.json")]);
+      var dirs = filesToWatch(options.cwd);
+      // watch all the dirs in elm-package.json
+      addDirDependency.bind(this)(dirs);
     } else {
       var dependencies = Promise.resolve()
         .then(function() {
