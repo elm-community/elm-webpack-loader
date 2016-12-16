@@ -8,6 +8,7 @@ var fixturesDir = path.join(__dirname, 'fixtures');
 var badSource = path.join(fixturesDir, 'Bad.elm');
 var goodSource = path.join(fixturesDir, 'Good.elm');
 var goodDependency = path.join(fixturesDir, 'GoodDependency.elm');
+var elmPackage = path.join(fixturesDir, 'elm-package.json');
 
 var toString = Object.prototype.toString;
 
@@ -27,10 +28,11 @@ var compile = function (filename) {
 }
 
 // Mock of webpack's loader context.
-var mock = function (source, query, opts, callback) {
+var mock = function (source, query, opts, callback, watchMode, cwd) {
   var emittedError;
   var emittedWarning;
   var addedDependencies = [];
+  var addedDirDependencies = [];
 
   var result = {
     loaders: [],
@@ -47,7 +49,9 @@ var mock = function (source, query, opts, callback) {
     emittedWarning: function () { return emittedWarning; },
 
     addDependency: function (dep) { addedDependencies.push(dep); },
+    addContextDependency: function(dir) { addedDirDependencies.push(dir); },
     addedDependencies: function () { return addedDependencies; },
+    addedDirDependencies: function() { return addedDirDependencies; },
 
     cacheable: function () {},
 
@@ -60,6 +64,15 @@ var mock = function (source, query, opts, callback) {
 
   if (opts) {
     result.options.elm = opts;
+  }
+
+  if (cwd){
+    result.options.cwd = "./"
+  }
+
+  if (watchMode) {
+    result.isInWatchMode = function() { return true; };
+    result.argv = {watch : true};
   }
 
   return result;
@@ -99,17 +112,37 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
-  it('adds dependencies', function (done) {
+  it('does not add dependencies in normal mode', function (done) {
     var options = {
       cwd: fixturesDir
     };
 
+    process.argv = [];
     var callback = function () {
-      assert.include(context.addedDependencies(), goodDependency);
+      assert.equal(context.addedDependencies().length, 0);
+      assert.equal(context.addedDirDependencies().length, 0);
       done();
     };
 
     context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
+  });
+
+  it('does add dependencies in watch mode', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
+
+    process.argv = [ "--watch" ];
+    var callback = function () {
+      assert.equal(context.addedDependencies().length, 1);
+      assert.include(context.addedDependencies(), elmPackage);
+      assert.equal(context.addedDirDependencies().length, 1);
+      assert.include(context.addedDirDependencies(), fixturesDir);
+      done();
+    };
+
+    context = mock(goodSource, null, options, callback, true);
     loader.call(context, goodSource);
   });
 
