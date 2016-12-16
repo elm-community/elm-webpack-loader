@@ -45,14 +45,19 @@ var filesToWatch = function(cwd){
   var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
   var elmPackage = JSON.parse(readFile);
 
-  var paths = elmPackage["source-directories"].map(function(dir){
+  var paths = [].concat(elmPackage["source-directories"].map(function(dir){
     var finalPath = path.join(cwd, dir);
-    return glob.sync("**/*.elm", { cwd: finalPath }).concat(
-      glob.sync("Native/**/*.js", { cwd: finalPath })
+    var options = {
+      cwd: finalPath,
+      ignore: "elm-stuff/**",
+      absolute: true
+    };
+    return glob.sync("**/*.elm", options).concat(
+      glob.sync("Native/**/*.js", options)
     );
-  });
+  }))[0];
 
-  return [].concat(paths);
+  return paths
 };
 
 module.exports = function() {
@@ -79,7 +84,7 @@ module.exports = function() {
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
       var things = filesToWatch(options.cwd);
-      addDependencies.bind(this)(things[0]);
+      addDependencies.bind(this)(things);
     } else {
       var dependencies = Promise.resolve()
         .then(function() {

@@ -27,7 +27,7 @@ var compile = function (filename) {
 }
 
 // Mock of webpack's loader context.
-var mock = function (source, query, opts, callback, watchMode) {
+var mock = function (source, query, opts, callback, watchMode, cwd) {
   var emittedError;
   var emittedWarning;
   var addedDependencies = [];
@@ -60,6 +60,10 @@ var mock = function (source, query, opts, callback, watchMode) {
 
   if (opts) {
     result.options.elm = opts;
+  }
+
+  if (cwd){
+    result.options.cwd = "./"
   }
 
   if (watchMode) {
@@ -126,8 +130,7 @@ describe('async mode', function () {
 
     process.argv = [ "--watch" ];
     var callback = function () {
-      console.log(context.addedDependencies())
-      assert.equal(context.addedDependencies().length, 1);
+      assert.equal(context.addedDependencies().length, 3);
       assert.include(context.addedDependencies(), goodDependency);
       done();
     };
