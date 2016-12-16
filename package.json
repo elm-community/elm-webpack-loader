@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
   "dependencies": {
+    "glob": "^7.1.1",
     "loader-utils": "^0.2.11",
     "node-elm-compiler": "^4.2.0",
     "yargs": "^6.5.0"

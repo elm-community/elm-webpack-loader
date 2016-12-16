@@ -1,8 +1,11 @@
 'use strict';
 
+var fs = require("fs")
+var path = require('path')
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
+var glob = require("glob");
 
 var cachedDependencies = [];
 
@@ -36,6 +39,22 @@ var isInWatchMode = function(){
   return typeof argv.watch !== "undefined" && argv.watch;
 };
 
+/* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there
+*/
+var filesToWatch = function(cwd){
+  var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
+  var elmPackage = JSON.parse(readFile);
+
+  var paths = elmPackage["source-directories"].map(function(dir){
+    var finalPath = path.join(cwd, dir);
+    return glob.sync("**/*.elm", { cwd: finalPath }).concat(
+      glob.sync("Native/**/*.js", { cwd: finalPath })
+    );
+  });
+
+  return [].concat(paths);
+};
+
 module.exports = function() {
   this.cacheable && this.cacheable();
 
@@ -57,16 +76,22 @@ module.exports = function() {
   // we only need to track deps if we are in watch mode
   // otherwise, we trust elm to do it's job
   if (isInWatchMode()){
-    var dependencies = Promise.resolve()
-      .then(function() {
-        if (!options.cache || cachedDependencies.length === 0) {
-          return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
-        }
-      }.bind(this))
-      .then(function(v) { return { kind: 'success', result: v }; })
-      .catch(function(v) { return { kind: 'error', error: v }; });
+    // we can do a glob to track deps we care about if cwd is set
+    if (typeof options.cwd !== "undefined" && options.cwd !== null){
+      var things = filesToWatch(options.cwd);
+      addDependencies.bind(this)(things[0]);
+    } else {
+      var dependencies = Promise.resolve()
+        .then(function() {
+          if (!options.cache || cachedDependencies.length === 0) {
+            return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
+          }
+        }.bind(this))
+        .then(function(v) { return { kind: 'success', result: v }; })
+        .catch(function(v) { return { kind: 'error', error: v }; });
 
-    promises.push(dependencies);
+      promises.push(dependencies);
+    }
   }
 
 
