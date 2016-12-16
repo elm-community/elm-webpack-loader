@@ -52,7 +52,9 @@ var filesToWatch = function(cwd){
 
   var elmPackage = JSON.parse(readFile);
 
-  var paths = elmPackage["source-directories"];
+  var paths = elmPackage["source-directories"].map(function(dir){
+    return path.join(cwd, dir);
+  });
 
   return paths;
 };

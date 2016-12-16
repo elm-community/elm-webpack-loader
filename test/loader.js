@@ -137,6 +137,8 @@ describe('async mode', function () {
     var callback = function () {
       assert.equal(context.addedDependencies().length, 1);
       assert.include(context.addedDependencies(), elmPackage);
+      assert.equal(context.addedDirDependencies().length, 1);
+      assert.include(context.addedDirDependencies(), fixturesDir);
       done();
     };
 
