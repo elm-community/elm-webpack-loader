@@ -1,5 +1,5 @@
 environment:
-  ELM_VERSION: 0.16.0
+  ELM_VERSION: 0.18
   matrix:
   - nodejs_version: "5.0"
   - nodejs_version: "4.2"
