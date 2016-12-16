@@ -43,8 +43,9 @@ var isInWatchMode = function(){
   var hasWebpackDevServer = Array.prototype.filter.call(process.argv, function (arg) {
     return arg.indexOf('webpack-dev-server') !== -1;
   }).length > 0;
+  var hasWatchArg = typeof argv.watch !== "undefined" && argv.watch;
 
-  return hasWebpackDevServer || (typeof argv.watch !== "undefined" && argv.watch);
+  return hasWebpackDevServer || hasWatchArg;
 };
 
 /* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there
