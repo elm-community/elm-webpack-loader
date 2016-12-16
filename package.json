@@ -28,7 +28,7 @@
     "elm": "^0.18.0",
     "glob": "^7.1.1",
     "loader-utils": "^0.2.11",
-    "node-elm-compiler": "^4.2.0",
+    "node-elm-compiler": "^4.2.1",
     "yargs": "^6.5.0"
   },
   "devDependencies": {
