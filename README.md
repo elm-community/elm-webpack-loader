@@ -36,6 +36,31 @@ See the [examples](#example) section below for the complete webpack configuratio
 
 ### Options
 
+#### cwd (default null) *Recommended*
+
+You can add `cwd=elmSource` to the loader:
+```js
+var elmSource = __dirname + '/elm/path/in/project'
+  ...
+  loader: 'elm-webpack?cwd=' + elmSource
+  ...
+```
+
+You can use this to specify a custom location within your project for your elm files. Note, this
+will cause the compiler to look for **all** elm source files in the specified directory. This approach is recommended as it allows the compile to watch elm-package.json as well as every file in the source directories.
+
+#### maxInstances (default 4)
+
+You can add `cache=true` to the loader:
+
+```js
+  ...
+  loader: 'elm-webpack?maxInstances=8'
+  ...
+```
+
+Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has
+
 #### Cache (default false)
 
 You can add `cache=true` to the loader:
@@ -52,18 +77,6 @@ new files won't be picked up and so won't be watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
-#### cwd (default null)
-
-You can add `cwd=elmSource` to the loader:
-```js
-var elmSource = __dirname + '/elm/path/in/project'
-  ...
-  loader: 'elm-webpack?cwd=' + elmSource
-  ...
-```
-
-You can use this to specify a custom location within your project for your elm files. Note, this
-will cause the compiler to look for **all** elm source files in the specified directory.
 
 #### Upstream options
 
