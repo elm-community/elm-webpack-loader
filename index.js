@@ -54,8 +54,6 @@ var filesToWatch = function(cwd){
   var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
   var elmPackage = JSON.parse(readFile);
 
-  var elmPackage = JSON.parse(readFile);
-
   var paths = elmPackage["source-directories"].map(function(dir){
     return path.join(cwd, dir);
   });
