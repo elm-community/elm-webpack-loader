@@ -8,6 +8,7 @@ var yargs = require('yargs');
 
 var cachedDependencies = [];
 var cachedDirDependencies = [];
+var runningInstances = 0;
 
 var defaultOptions = {
   cache: false,
@@ -72,12 +73,7 @@ module.exports = function() {
 
   var input = getInput.call(this);
   var options = getOptions.call(this);
-
-  var compilation = elmCompiler.compileToString(input, options)
-    .then(function(v) { return { kind: 'success', result: v }; })
-    .catch(function(v) { return { kind: 'error', error: v }; });
-
-  var promises = [compilation];
+  var promises = [];
 
   // we only need to track deps if we are in watch mode
   // otherwise, we trust elm to do it's job
@@ -85,7 +81,8 @@ module.exports = function() {
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
       // watch elm-package.json
-      addDependencies.bind(this)([path.join(options.cwd, "elm-package.json")]);
+      var elmPackage = path.join(options.cwd, "elm-package.json");
+      addDependencies.bind(this)([elmPackage]);
       var dirs = filesToWatch(options.cwd);
       // watch all the dirs in elm-package.json
       addDirDependency.bind(this)(dirs);
@@ -103,15 +100,36 @@ module.exports = function() {
     }
   }
 
+  var maxInstances = options.maxInstances;
 
-  Promise.all(promises)
-    .then(function(results) {
-      var output = results[0]; // compilation output
-      if (output.kind == 'success') {
-        callback(null, output.result);
-      } else {
-        output.error.message = 'Compiler process exited with error ' + output.error.message;
-        callback(output.error);
-      }
-    });
+  if (typeof maxInstances === "undefined"){
+    maxInstances = 4;
+  } else {
+    delete options.maxInstances;
+  }
+
+  var intervalId = setInterval(function(){
+    if (runningInstances > maxInstances) return;
+    runningInstances += 1;
+    clearInterval(intervalId);
+
+    var compilation = elmCompiler.compileToString(input, options)
+      .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
+      .catch(function(v) { return { kind: 'error', error: v }; });
+
+    promises.push(compilation);
+
+    Promise.all(promises)
+      .then(function(results) {
+        var output = results[0]; // compilation output
+
+        if (output.kind == 'success') {
+          callback(null, output.result);
+        } else {
+          output.error.message = 'Compiler process exited with error ' + output.error.message;
+          callback(output.error);
+        }
+      });
+
+  }, 200);
 }
