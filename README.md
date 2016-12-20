@@ -122,6 +122,10 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 ## Revisions
 
+### 4.1.0
+
+Pick up file changes for webpack dev server, limit running processes.
+
 ### 4.0.0
 
 Watching is now done based on elm-package.json, faster startup time via @eeue56
