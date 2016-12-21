@@ -135,7 +135,7 @@ describe('async mode', function () {
 
     process.argv = [ "--watch" ];
     var callback = function () {
-      assert.equal(context.addedDependencies().length, 1);
+      assert.equal(context.addedDependencies().length, 2);
       assert.include(context.addedDependencies(), elmPackage);
       assert.equal(context.addedDirDependencies().length, 1);
       assert.include(context.addedDirDependencies(), fixturesDir);
