@@ -121,7 +121,7 @@ module.exports = function() {
 
     Promise.all(promises)
       .then(function(results) {
-        var output = results[0]; // compilation output
+        var output = results[results.length - 1]; // compilation output
 
         if (output.kind == 'success') {
           callback(null, output.result);
