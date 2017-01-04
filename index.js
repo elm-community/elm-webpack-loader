@@ -115,7 +115,7 @@ module.exports = function() {
 
     var compilation = elmCompiler.compileToString(input, options)
       .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
-      .catch(function(v) { return { kind: 'error', error: v }; });
+      .catch(function(v) { runningInstances -= 1; return { kind: 'error', error: v }; });
 
     promises.push(compilation);
 
