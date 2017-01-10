@@ -7,7 +7,6 @@ var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
 
 var cachedDependencies = [];
-var cachedDirDependencies = [];
 var runningInstances = 0;
 
 var defaultOptions = {
@@ -32,11 +31,6 @@ var addDependencies = function(dependencies) {
   dependencies.forEach(this.addDependency.bind(this));
 };
 
-var addDirDependency = function(dirs){
-  cachedDirDependencies = cachedDirDependencies.concat(dirs);
-  dirs.forEach(this.addContextDependency.bind(this));
-};
-
 var isInWatchMode = function(){
   var argv = yargs(process.argv)
       .alias('w', 'watch')
@@ -51,15 +45,35 @@ var isInWatchMode = function(){
 
 /* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there
 */
-var filesToWatch = function(cwd){
-  var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
+var filesToWatch = function(cwd) {
+  var elmPackagePath = path.join(cwd, "elm-package.json");
+  var readFile = fs.readFileSync(elmPackagePath, 'utf8');
   var elmPackage = JSON.parse(readFile);
 
-  var paths = elmPackage["source-directories"].map(function(dir){
-    return path.join(cwd, dir);
-  });
+  var toWatch = [elmPackagePath]; // watch elm-package.json
+  return elmPackage["source-directories"].reduce(function(files, dir) {
+    return files.concat(filesForSourcePath(path.join(cwd, dir)));
+  }, toWatch);
+};
 
-  return paths;
+/* Finds all the modules for a given source directory */
+var filesForSourcePath = function(sourcePath) {
+  var files = fs.readdirSync(sourcePath, 'utf8');
+  return files.reduce(function(files, fileName) {
+    var filePath = path.join(sourcePath, fileName);
+
+    // .elm = Elm module, .js = possible Elm native module
+    if (fileName.endsWith('.elm') || fileName.endsWith('.js')) {
+      return files.concat(filePath);
+    }
+
+    // recurse into subdirectories
+    if (fs.lstatSync(path.join(sourcePath, fileName)).isDirectory()) {
+      return files.concat(filesForSourcePath(filePath));
+    }
+
+    return files;
+  }, []);
 };
 
 module.exports = function() {
@@ -80,12 +94,7 @@ module.exports = function() {
   if (isInWatchMode()){
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
-      // watch elm-package.json
-      var elmPackage = path.join(options.cwd, "elm-package.json");
-      addDependencies.bind(this)([elmPackage]);
-      var dirs = filesToWatch(options.cwd);
-      // watch all the dirs in elm-package.json
-      addDirDependency.bind(this)(dirs);
+      addDependencies.call(this, filesToWatch(options.cwd));
     } else {
       var dependencies = Promise.resolve()
         .then(function() {

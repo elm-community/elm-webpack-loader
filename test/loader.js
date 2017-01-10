@@ -32,7 +32,6 @@ var mock = function (source, query, opts, callback, watchMode, cwd) {
   var emittedError;
   var emittedWarning;
   var addedDependencies = [];
-  var addedDirDependencies = [];
 
   var result = {
     loaders: [],
@@ -49,9 +48,7 @@ var mock = function (source, query, opts, callback, watchMode, cwd) {
     emittedWarning: function () { return emittedWarning; },
 
     addDependency: function (dep) { addedDependencies.push(dep); },
-    addContextDependency: function(dir) { addedDirDependencies.push(dir); },
     addedDependencies: function () { return addedDependencies; },
-    addedDirDependencies: function() { return addedDirDependencies; },
 
     cacheable: function () {},
 
@@ -120,7 +117,6 @@ describe('async mode', function () {
     process.argv = [];
     var callback = function () {
       assert.equal(context.addedDependencies().length, 0);
-      assert.equal(context.addedDirDependencies().length, 0);
       done();
     };
 
@@ -135,10 +131,8 @@ describe('async mode', function () {
 
     process.argv = [ "--watch" ];
     var callback = function () {
-      assert.equal(context.addedDependencies().length, 1);
       assert.include(context.addedDependencies(), elmPackage);
-      assert.equal(context.addedDirDependencies().length, 1);
-      assert.include(context.addedDirDependencies(), fixturesDir);
+      assert.include(context.addedDependencies(), goodDependency);
       done();
     };
 
