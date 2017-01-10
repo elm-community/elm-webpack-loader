@@ -9,6 +9,7 @@ var yargs = require('yargs');
 var cachedDependencies = [];
 var cachedDirDependencies = [];
 var runningInstances = 0;
+var alreadyCompiledFiles = [];
 
 var defaultOptions = {
   cache: false,
@@ -27,24 +28,36 @@ var getOptions = function() {
   }, defaultOptions, globalOptions, loaderOptions);
 };
 
-var addDependencies = function(dependencies) {
-  cachedDependencies = cachedDependencies.concat(dependencies);
-  dependencies.forEach(this.addDependency.bind(this));
+var _addDependencies = function(dependency) {
+  cachedDependencies.push(dependency);
+  this.addDependency(dependency);
 };
 
-var addDirDependency = function(dirs){
+var _addDirDependency = function(dirs){
+  // only keep unique dirs
+  dirs = dirs.filter(function(dir){
+    return cachedDirDependencies.indexOf(dir) === -1;
+  });
+
   cachedDirDependencies = cachedDirDependencies.concat(dirs);
   dirs.forEach(this.addContextDependency.bind(this));
 };
 
+/* Figures out if webpack has been run in watch mode
+    This currently means either that the `watch` command was used
+    Or it was run via `webpack-dev-server`
+*/
 var isInWatchMode = function(){
+  // parse the argv given to run this webpack instance
   var argv = yargs(process.argv)
       .alias('w', 'watch')
       .argv;
+
+  var hasWatchArg = typeof argv.watch !== "undefined" && argv.watch;
+
   var hasWebpackDevServer = Array.prototype.filter.call(process.argv, function (arg) {
     return arg.indexOf('webpack-dev-server') !== -1;
   }).length > 0;
-  var hasWatchArg = typeof argv.watch !== "undefined" && argv.watch;
 
   return hasWebpackDevServer || hasWatchArg;
 };
@@ -66,13 +79,18 @@ module.exports = function() {
   this.cacheable && this.cacheable();
 
   var callback = this.async();
-
   if (!callback) {
     throw 'elm-webpack-loader currently only supports async mode.';
   }
 
+  // bind helper functions to `this`
+  var addDependencies = _addDependencies.bind(this);
+  var addDirDependency = _addDirDependency.bind(this);
+  var emitError = this.emitError.bind(this);
+
   var input = getInput.call(this);
   var options = getOptions.call(this);
+
   var promises = [];
 
   // we only need to track deps if we are in watch mode
@@ -82,22 +100,24 @@ module.exports = function() {
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
       // watch elm-package.json
       var elmPackage = path.join(options.cwd, "elm-package.json");
-      addDependencies.bind(this)([elmPackage]);
+      addDependencies(elmPackage);
       var dirs = filesToWatch(options.cwd);
       // watch all the dirs in elm-package.json
       addDirDependency.bind(this)(dirs);
-    } else {
-      var dependencies = Promise.resolve()
-        .then(function() {
-          if (!options.cache || cachedDependencies.length === 0) {
-            return elmCompiler.findAllDependencies(input).then(addDependencies.bind(this));
-          }
-        }.bind(this))
-        .then(function(v) { return { kind: 'success', result: v }; })
-        .catch(function(v) { return { kind: 'error', error: v }; });
-
-      promises.push(dependencies);
     }
+
+    // find all the deps, adding them to the watch list if we successfully parsed everything
+    // otherwise return an error which is currently ignored
+    var dependencies = elmCompiler.findAllDependencies(input).then(function(dependencies){
+      // add each dependency to the tree
+      dependencies.map(addDependencies);
+      return { kind: 'success', result: true };
+    }).catch(function(v){
+      emitError(v);
+      return { kind: 'error', error: v };
+    })
+
+    promises.push(dependencies);
   }
 
   var maxInstances = options.maxInstances;
@@ -113,9 +133,16 @@ module.exports = function() {
     runningInstances += 1;
     clearInterval(intervalId);
 
+    // If we are running in watch mode, and we have previously compiled
+    // the current file, then let the user know that elm-make is running
+    // and can be slow
+    if (alreadyCompiledFiles.indexOf(input) > -1){
+      console.log('Started compiling Elm..');
+    }
+
     var compilation = elmCompiler.compileToString(input, options)
       .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
-      .catch(function(v) { return { kind: 'error', error: v }; });
+      .catch(function(v) { runningInstances -= 1; return { kind: 'error', error: v }; });
 
     promises.push(compilation);
 
@@ -124,11 +151,14 @@ module.exports = function() {
         var output = results[results.length - 1]; // compilation output is always last
 
         if (output.kind == 'success') {
+          alreadyCompiledFiles.push(input);
           callback(null, output.result);
         } else {
           output.error.message = 'Compiler process exited with error ' + output.error.message;
           callback(output.error);
         }
+      }).catch(function(err){
+        callback(err);
       });
 
   }, 200);
