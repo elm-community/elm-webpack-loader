@@ -51,7 +51,7 @@ will cause the compiler to look for **all** elm source files in the specified di
 
 #### maxInstances (default 4)
 
-You can add `cache=true` to the loader:
+You can add `maxInstances=8` to the loader:
 
 ```js
   ...
