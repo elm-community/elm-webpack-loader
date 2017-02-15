@@ -6,7 +6,6 @@ var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
 
-var cachedDirDependencies = [];
 var runningInstances = 0;
 var alreadyCompiledFiles = [];
 
@@ -32,12 +31,6 @@ var _addDependencies = function(dependency) {
 };
 
 var _addDirDependency = function(dirs){
-  // only keep unique dirs
-  dirs = dirs.filter(function(dir){
-    return cachedDirDependencies.indexOf(dir) === -1;
-  });
-
-  cachedDirDependencies = cachedDirDependencies.concat(dirs);
   dirs.forEach(this.addContextDependency.bind(this));
 };
 
