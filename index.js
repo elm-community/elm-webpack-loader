@@ -6,7 +6,6 @@ var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
 
-var cachedDependencies = [];
 var cachedDirDependencies = [];
 var runningInstances = 0;
 var alreadyCompiledFiles = [];
@@ -29,7 +28,6 @@ var getOptions = function() {
 };
 
 var _addDependencies = function(dependency) {
-  cachedDependencies.push(dependency);
   this.addDependency(dependency);
 };
 
