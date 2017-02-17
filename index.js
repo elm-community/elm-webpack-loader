@@ -123,7 +123,7 @@ module.exports = function() {
   var maxInstances = options.maxInstances;
 
   if (typeof maxInstances === "undefined"){
-    maxInstances = 4;
+    maxInstances = 1;
   } else {
     delete options.maxInstances;
   }
