@@ -22,7 +22,7 @@ var getInput = function() {
 
 var getOptions = function() {
   var globalOptions = this.options.elm || {};
-  var loaderOptions = loaderUtils.parseQuery(this.query);
+  var loaderOptions = loaderUtils.getOptions(this) || {};
   return Object.assign({
     emitWarning: this.emitWarning
   }, defaultOptions, globalOptions, loaderOptions);
