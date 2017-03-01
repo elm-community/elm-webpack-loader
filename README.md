@@ -77,6 +77,17 @@ new files won't be picked up and so won't be watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
+#### ForceWatch (default false)
+
+This loader will infer if you are running webpack in watch mode by checking
+the webpack arguments. If you are running webpack programmatically and
+wants to force this behaviour you can add `forceWatch=true` to the loader:
+
+```js
+  ...
+  loader: 'elm-webpack?forceWatch=true'
+  ...
+```
 
 #### Upstream options
 

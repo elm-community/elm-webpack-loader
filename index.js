@@ -13,6 +13,7 @@ var alreadyCompiledFiles = [];
 
 var defaultOptions = {
   cache: false,
+  forceWatch: false,
   yes: true
 };
 
@@ -95,7 +96,7 @@ module.exports = function() {
 
   // we only need to track deps if we are in watch mode
   // otherwise, we trust elm to do it's job
-  if (isInWatchMode()){
+  if (options.forceWatch || isInWatchMode()){
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
       // watch elm-package.json
@@ -119,6 +120,8 @@ module.exports = function() {
 
     promises.push(dependencies);
   }
+
+  delete options.forceWatch
 
   var maxInstances = options.maxInstances;
 
