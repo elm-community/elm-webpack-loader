@@ -4,7 +4,8 @@
   "repository": "https://github.com/rtfeldman/elm-webpack-loader.git",
   "license": "BSD-3-Clause",
   "source-directories": [
-    "."
+    ".",
+    "../other_elm_source_dir"
   ],
   "exposed-modules": [
   ],

@@ -9,6 +9,7 @@ var badSource = path.join(fixturesDir, 'Bad.elm');
 var goodSource = path.join(fixturesDir, 'Good.elm');
 var goodDependency = path.join(fixturesDir, 'GoodDependency.elm');
 var elmPackage = path.join(fixturesDir, 'elm-package.json');
+var otherElmSourceDir = path.join(__dirname, 'other_elm_source_dir');
 
 var toString = Object.prototype.toString;
 
@@ -137,8 +138,9 @@ describe('async mode', function () {
     var callback = function () {
       assert.equal(context.addedDependencies().length, 2);
       assert.include(context.addedDependencies(), elmPackage);
-      assert.equal(context.addedDirDependencies().length, 1);
+      assert.equal(context.addedDirDependencies().length, 2);
       assert.include(context.addedDirDependencies(), fixturesDir);
+      assert.include(context.addedDirDependencies(), otherElmSourceDir);
       done();
     };
 
