@@ -1,4 +1,4 @@
-# Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/rtfeldman/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/rtfeldman/elm-webpack-loader) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/7a5ws36eenwpdvgc/branch/master?svg=true)](https://ci.appveyor.com/project/rtfeldman/elm-webpack-loader/branch/master)
+# Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/elm-community/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/elm-community/elm-webpack-loader) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/7a5ws36eenwpdvgc/branch/master?svg=true)](https://ci.appveyor.com/project/elm-community/elm-webpack-loader/branch/master)
 
 [Webpack](http://webpack.github.io/docs/) loader for the [Elm](http://elm-lang.org/) programming language.
 
@@ -77,6 +77,17 @@ new files won't be picked up and so won't be watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
+#### ForceWatch (default false)
+
+This loader will infer if you are running webpack in watch mode by checking
+the webpack arguments. If you are running webpack programmatically and
+wants to force this behaviour you can add `forceWatch=true` to the loader:
+
+```js
+  ...
+  loader: 'elm-webpack?forceWatch=true'
+  ...
+```
 
 #### Upstream options
 
