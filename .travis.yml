@@ -38,6 +38,7 @@ install:
   - elm-make --yes
   - cd ../..
   - npm install
+  - ls -la test/fixtures
 
 script:
   - npm test
