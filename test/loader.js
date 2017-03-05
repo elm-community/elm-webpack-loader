@@ -93,6 +93,8 @@ describe('sync mode', function () {
 describe('async mode', function () {
   var context;
 
+  this.timeout(600000);
+
   it('compiles the resource', function (done) {
     var options = {
       cwd: fixturesDir
@@ -102,10 +104,6 @@ describe('async mode', function () {
       compile(goodSource).then(function (compilerResult) {
         assert.equal(hash(loaderResult), hash(compilerResult));
         done();
-      })
-      .catch(err => {
-        console.error('Compile error: ', err);
-        done(err);
       });
     };
 
