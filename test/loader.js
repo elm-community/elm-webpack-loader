@@ -24,9 +24,6 @@ var compile = function (filename) {
   return compiler.compileToString([filename], {yes: true, cwd: fixturesDir})
     .then(function (data) {
       return data.toString();
-    })
-    .catch(err => {
-      console.error(err);
     });
 }
 
@@ -105,6 +102,10 @@ describe('async mode', function () {
       compile(goodSource).then(function (compilerResult) {
         assert.equal(hash(loaderResult), hash(compilerResult));
         done();
+      })
+      .catch(err => {
+        console.error('Compile error: ', err);
+        done(err);
       });
     };
 
