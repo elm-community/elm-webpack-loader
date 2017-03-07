@@ -42,7 +42,10 @@ rules:
   no-caller: 'error'
   no-div-regex: 'error'
   no-else-return: 'error'
-  no-empty-function: 'error'
+  no-empty-function:
+    - 'error'
+    - allow:
+      - 'arrowFunctions'
   no-eval: 'error'
   no-extend-native: 'error'
   no-extra-bind: 'error'
@@ -202,7 +205,6 @@ rules:
   new-parens: 'error'
   newline-after-var: 'error'
   newline-before-return: 'error'
-  newline-per-chained-call: 'error'
   no-array-constructor: 'error'
   no-multi-assign: 'error'
   no-multiple-empty-lines:
