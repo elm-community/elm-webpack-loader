@@ -4,7 +4,8 @@
   "description": "Webpack loader for the Elm programming language.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/*.js"
+    "test": "mocha test/*.js",
+    "lint": "node_modules/.bin/eslint ."
   },
   "engines": {
     "node": ">=6.0.0"
