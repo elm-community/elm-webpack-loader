@@ -104,7 +104,7 @@ describe('sync mode', () => {
   });
 });
 
-describe('async mode', () => {
+describe('async mode', function passContextFunc() {
   let context = null;
 
   // Download of Elm can take a while.
