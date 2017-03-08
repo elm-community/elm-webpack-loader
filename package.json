@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/*.js",
-    "lint": "node_modules/.bin/eslint ."
+    "lint": "eslint ."
   },
   "engines": {
     "node": ">=6.0.0"
