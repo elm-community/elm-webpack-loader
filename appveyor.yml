@@ -1,8 +1,8 @@
 environment:
   ELM_VERSION: 0.18
   matrix:
-  - nodejs_version: "5.0"
-  - nodejs_version: "4.2"
+  - nodejs_version: "7.0"
+  - nodejs_version: "6.0"
 
 platform:
   - x86

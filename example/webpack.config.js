@@ -7,8 +7,8 @@ module.exports = {
   },
 
   resolve: {
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.js', '.elm']
+    modulesDirectories: [ 'node_modules' ],
+    extensions: [ '', '.js', '.elm' ]
   },
 
   module: {
@@ -20,7 +20,7 @@ module.exports = {
       },
       {
         test: /\.elm$/,
-        exclude: [/elm-stuff/, /node_modules/],
+        exclude: [ /elm-stuff/, /node_modules/ ],
         loader: '../../index.js'
       }
     ],

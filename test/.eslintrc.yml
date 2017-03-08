@@ -1,0 +1,6 @@
+env:
+  jasmine: true
+
+rules:
+  no-invalid-this: 'off'
+  no-magic-numbers: 'off'

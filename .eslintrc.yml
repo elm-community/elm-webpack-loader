@@ -1,0 +1,318 @@
+root: true
+
+extends:
+  - 'eslint:recommended'
+
+env:
+  es6: true
+  node: true
+
+rules:
+  ### POSSIBLE ERRORS ###
+
+  no-compare-neg-zero: 'error'
+  no-console: 'off'
+  no-extra-parens: 'error'
+  no-template-curly-in-string: 'error'
+  no-unsafe-negation: 'error'
+  valid-jsdoc: 'error'
+  valid-typeof: 'error'
+
+
+  ### BEST PRACTICES ###
+
+  accessor-pairs: 'error'
+  array-callback-return: 'error'
+  block-scoped-var: 'error'
+  consistent-return: 'error'
+  curly: 'error'
+  default-case: 'error'
+  dot-location:
+    - 'error'
+    - 'property'
+  dot-notation:
+    - 'error'
+    - allowKeywords: true
+  eqeqeq:
+      - 'error'
+      - 'always'
+      - null: 'ignore'
+  guard-for-in: 'error'
+  no-alert: 'error'
+  no-caller: 'error'
+  no-div-regex: 'error'
+  no-else-return: 'error'
+  no-empty-function:
+    - 'error'
+    - allow:
+      - 'arrowFunctions'
+  no-eval: 'error'
+  no-extend-native: 'error'
+  no-extra-bind: 'error'
+  no-extra-label: 'error'
+  no-floating-decimal: 'error'
+  no-global-assign: 'error'
+  no-implicit-coercion:
+    - 'error'
+    - boolean: false
+      number: true
+      string: true
+  no-implied-eval: 'error'
+  no-invalid-this: 'error'
+  no-iterator: 'error'
+  no-labels: 'error'
+  no-lone-blocks: 'error'
+  no-loop-func: 'error'
+  no-magic-numbers:
+    - 'error'
+    - ignoreArrayIndexes: true
+      ignore:
+      - 1
+      - 0
+      - -1
+  no-multi-spaces: 'error'
+  no-multi-str: 'error'
+  no-new: 'error'
+  no-new-func: 'error'
+  no-new-wrappers: 'error'
+  no-octal-escape: 'error'
+  no-param-reassign: 'error'
+  no-proto: 'error'
+  no-return-assign:
+    - 'error'
+    - 'always'
+  no-return-await: 'error'
+  no-self-compare: 'error'
+  no-sequences: 'error'
+  no-throw-literal: 'error'
+  no-unused-expressions: 'error'
+  no-useless-call: 'error'
+  no-useless-concat: 'error'
+  no-useless-escape: 'error'
+  no-useless-return: 'error'
+  no-void: 'error'
+  no-warning-comments: 'error'
+  no-with: 'error'
+  radix: 'error'
+  require-await: 'error'
+  yoda: 'error'
+
+
+  ### STRICT MODE ###
+
+  strict: 'error'
+
+
+  ### VARIABLES ###
+
+  init-declarations:
+    - 'error'
+    - 'always'
+  no-catch-shadow: 'error'
+  no-label-var: 'error'
+  no-restricted-globals: 'error'
+  no-shadow: 'error'
+  no-shadow-restricted-names: 'error'
+  no-undef-init: 'error'
+  no-undefined: 'error'
+  no-use-before-define:
+    - 'error'
+    - 'nofunc'
+
+
+  ### NODE.JS ###
+
+  callback-return:
+    - 'error'
+    - - 'done'
+      - 'cb'
+      - 'send.error'
+      - 'send.success'
+  handle-callback-err: 'error'
+  no-new-require: 'error'
+  no-path-concat: 'error'
+  no-process-exit: 'error'
+
+
+  ### STYLISTIC ISSUES ###
+
+  array-bracket-spacing:
+    - 'error'
+    - 'always'
+    - objectsInArrays: false
+      arraysInArrays: false
+  block-spacing:
+    - 'error'
+    - 'always'
+  brace-style:
+    - 'error'
+    - '1tbs'
+  camelcase:
+    - 'error'
+    - properties: 'never'
+  comma-dangle:
+    - 'error'
+    - 'never'
+  comma-spacing:
+    - 'error'
+    - before: false
+      after: true
+  comma-style:
+    - 'error'
+    - 'last'
+  computed-property-spacing:
+    - 'error'
+    - 'always'
+  consistent-this:
+    - 'error'
+    - 'self'
+  eol-last:
+    - 'error'
+    - 'always'
+  func-call-spacing:
+    - 'error'
+    - 'never'
+  func-name-matching: 'error'
+  func-names: 'error'
+  indent:
+    - 'error'
+    - 2
+    - SwitchCase: 1
+      MemberExpression: 1
+  key-spacing:
+    - 2
+    - beforeColon: false
+      afterColon: true
+  keyword-spacing: 'error'
+  linebreak-style:
+    - 2
+    - 'unix'
+  max-depth:
+    - 'error'
+    - 4
+  max-len:
+    - 'error'
+    - 120
+  max-nested-callbacks:
+    - 'error'
+    - 4
+  max-statements-per-line:
+    - 'error'
+    - max: 1
+  new-cap:
+    - 'error'
+    - capIsNew: false
+  new-parens: 'error'
+  newline-after-var: 'error'
+  newline-before-return: 'error'
+  no-array-constructor: 'error'
+  no-multi-assign: 'error'
+  no-multiple-empty-lines:
+    - 'error'
+    - max: 2
+  no-nested-ternary: 'error'
+  no-new-object: 'error'
+  no-plusplus: 'error'
+  no-tabs: 'error'
+  no-trailing-spaces: 'error'
+  no-unneeded-ternary: 'error'
+  no-whitespace-before-property: 'error'
+  nonblock-statement-body-position:
+    - 'error'
+    - 'below'
+  object-curly-newline:
+    - 'error'
+    - ObjectExpression:
+        multiline: true
+        minProperties: 1
+      ObjectPattern:
+        multiline: true
+  object-curly-spacing:
+    - 'error'
+    - 'always'
+    - arraysInObjects: false
+      objectsInObjects: false
+  object-property-newline: 'error'
+  one-var:
+    - 'error'
+    - uninitialized: 'never'
+      initialized: 'never'
+  operator-assignment:
+    - 'error'
+    - 'always'
+  operator-linebreak:
+    - 'error'
+    - 'before'
+  padded-blocks:
+    - 'error'
+    - 'never'
+  quote-props:
+    - 'error'
+    - 'as-needed'
+  quotes:
+    - 'error'
+    - 'single'
+    - avoidEscape: true
+  semi:
+    - 'error'
+    - 'always'
+  semi-spacing:
+    - 'error'
+    - before: false
+      after: true
+  space-before-blocks:
+    - 'error'
+    - 'always'
+  space-before-function-paren:
+    - 'error'
+    - 'never'
+  space-in-parens:
+    - 'error'
+    - 'never'
+  space-infix-ops: 'error'
+  space-unary-ops: 'error'
+  spaced-comment:
+    - 'error'
+    - 'always'
+    - exceptions:
+      - '*'
+      - '-'
+
+
+  ### ECMAScript 6 ###
+
+  arrow-body-style:
+    - 'error'
+    - 'as-needed'
+  arrow-parens:
+    - 'error'
+    - 'as-needed'
+  arrow-spacing: 'error'
+  generator-star-spacing:
+    - 'error'
+    - before: false
+      after: true
+  no-class-assign: 'error'
+  no-const-assign: 'error'
+  no-duplicate-imports: 'error'
+  no-useless-computed-key: 'error'
+  no-useless-constructor: 'error'
+  no-useless-rename: 'error'
+  no-var: 'error'
+  prefer-arrow-callback:
+    - 'error'
+    - allowNamedFunctions: true
+  prefer-const:
+    - 'error'
+    - destructuring: 'any'
+  prefer-destructuring: 'error'
+  prefer-rest-params: 'error'
+  prefer-spread: 'error'
+  prefer-template: 'error'
+  rest-spread-spacing:
+    - 'error'
+    - 'never'
+  template-curly-spacing: 'error'
+  yield-star-spacing:
+    - 'error'
+    - 'after'
