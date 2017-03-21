@@ -49,7 +49,7 @@ var elmSource = __dirname + '/elm/path/in/project'
 You can use this to specify a custom location within your project for your elm files. Note, this
 will cause the compiler to look for **all** elm source files in the specified directory. This approach is recommended as it allows the compile to watch elm-package.json as well as every file in the source directories.
 
-#### maxInstances (default 4)
+#### maxInstances (default 1)
 
 You can add `maxInstances=8` to the loader:
 
@@ -59,7 +59,7 @@ You can add `maxInstances=8` to the loader:
   ...
 ```
 
-Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has
+Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm instances causing deadlocks. 
 
 #### Cache (default false)
 
@@ -132,6 +132,20 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 ```
 
 ## Revisions
+
+
+### 4.3.0
+
+- Set maxInstances to 1
+- Patch watching behaviour 
+
+### 4.2.0
+
+Make live reloading work more reliably
+
+### 4.1.0
+
+Added `maxInstances` for limiting of instances
 
 ### 4.0.0
 
