@@ -138,6 +138,7 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 - Set maxInstances to 1
 - Patch watching behaviour 
+- Add `forceWatch` to force watch mode
 
 ### 4.2.0
 
