@@ -16,17 +16,17 @@ $ npm install --save elm-webpack-loader
 
 ## Usage
 
-[Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
+[Documentation: Using loaders](https://webpack.js.org/configuration/module/#rule)
 
 In your `webpack.config.js` file:
 
 ```js
 module.exports = {
   module: {
-    loaders: [{
+    rules: [{
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      loader: 'elm-webpack'
+      use: 'elm-webpack-loader'
     }]
   }
 };
