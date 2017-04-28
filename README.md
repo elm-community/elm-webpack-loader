@@ -16,9 +16,11 @@ $ npm install --save elm-webpack-loader
 
 ## Usage
 
-[Documentation: Using loaders](https://webpack.js.org/configuration/module/#rule)
+#### Webpack 2
 
-In your `webpack.config.js` file:
+Documentation: [rules](https://webpack.js.org/configuration/module/#rule)
+
+`webpack.config.js`:
 
 ```js
 module.exports = {
@@ -26,7 +28,28 @@ module.exports = {
     rules: [{
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      use: 'elm-webpack-loader'
+      use: {
+        loader: 'elm-webpack-loader',
+        options: {}
+      }
+    }]
+  }
+};
+```
+
+#### Webpack 1
+
+Documentation: [loaders](http://webpack.github.io/docs/using-loaders.html)
+
+`webpack.config.js`:
+
+```js
+module.exports = {
+  module: {
+    loaders: [{
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      loader: 'elm-webpack'
     }]
   }
 };
