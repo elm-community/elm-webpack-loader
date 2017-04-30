@@ -156,6 +156,9 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 
 ## Revisions
 
+### 4.3.1
+
+- Fix a bug where maxInstances might end up being higher than expected
 
 ### 4.3.0
 
