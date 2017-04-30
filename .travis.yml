@@ -34,10 +34,11 @@ install:
   - node --version
   - npm --version
   - npm install -g elm@$ELM_VERSION
-  - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
-  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
-  - chmod +x $(npm config get prefix)/bin/elm-make
+  - cd test/fixtures
+  - elm-make --yes
+  - cd ../..
   - npm install
+  - ls -la test/fixtures
 
 script:
   - npm test
