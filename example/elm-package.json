@@ -1,7 +1,7 @@
 {
     "version": "0.0.0",
     "summary": "Example using `elm-webpack-loader`.",
-    "repository": "https://github.com/rtfeldman/elm-webpack-loader.git",
+    "repository": "https://github.com/elm-community/elm-webpack-loader.git",
     "license": "BSD-3-Clause",
     "source-directories": [
         "src"
