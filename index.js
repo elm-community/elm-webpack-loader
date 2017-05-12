@@ -123,7 +123,7 @@ module.exports = function() {
   }
 
   var intervalId = setInterval(function(){
-    if (runningInstances > maxInstances) return;
+    if (runningInstances >= maxInstances) return;
     runningInstances += 1;
     clearInterval(intervalId);
 

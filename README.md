@@ -16,9 +16,32 @@ $ npm install --save elm-webpack-loader
 
 ## Usage
 
-[Documentation: Using loaders](https://webpack.js.org/loaders/)
+#### Webpack 2
 
-In your `webpack.config.js` file:
+Documentation: [rules](https://webpack.js.org/configuration/module/#rule)
+
+`webpack.config.js`:
+
+```js
+module.exports = {
+  module: {
+    rules: [{
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      use: {
+        loader: 'elm-webpack-loader',
+        options: {}
+      }
+    }]
+  }
+};
+```
+
+#### Webpack 1
+
+Documentation: [loaders](http://webpack.github.io/docs/using-loaders.html)
+
+`webpack.config.js`:
 
 ```js
 module.exports = {
@@ -141,6 +164,9 @@ in the example.
 
 ## Revisions
 
+### 4.3.1
+
+- Fix a bug where maxInstances might end up being higher than expected
 
 ### 4.3.0
 

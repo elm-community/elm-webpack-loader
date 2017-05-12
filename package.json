@@ -1,6 +1,6 @@
 {
   "name": "elm-webpack-loader",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "description": "Webpack loader for the Elm programming language.",
   "main": "index.js",
   "scripts": {
@@ -11,19 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rtfeldman/elm-webpack-loader.git"
+    "url": "https://github.com/elm-community/elm-webpack-loader.git"
   },
   "keywords": [
     "elm",
     "webpack",
     "loader"
   ],
-  "author": "Richard Feldman",
+  "author": "elm-community",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/rtfeldman/elm-webpack-loader/issues"
+    "url": "https://github.com/elm-community/elm-webpack-loader/issues"
   },
-  "homepage": "https://github.com/rtfeldman/elm-webpack-loader",
+  "homepage": "https://github.com/elm-community/elm-webpack-loader",
   "dependencies": {
     "elm": "^0.18.0",
     "glob": "^7.1.1",
