@@ -15,12 +15,19 @@ module.exports = {
       {
         test: /\.html$/,
         exclude: /node_modules/,
-        use: 'file-loader?name=[name].[ext]'
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]'
+          }
+        }
       },
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        use: '../index.js'
+        use: {
+          loader: '../index.js'
+        }
       }
     ],
 

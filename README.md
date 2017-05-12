@@ -3,7 +3,7 @@
 [Webpack](https://webpack.js.org/) loader for the [Elm](http://elm-lang.org/) programming language.
 
 It is aware of Elm dependencies and tracks them. This means that in `--watch`
-mode, if you `require` an Elm module from a webpack entry point, not only will
+mode, if you `require` an Elm module from a Webpack entry point, not only will
 that `.elm` file be watched for changes, but any other Elm modules it imports will
 be watched for changes as well.
 
@@ -65,7 +65,12 @@ You can add `cwd=elmSource` to the loader:
 ```js
 var elmSource = __dirname + '/elm/path/in/project'
   ...
-  use: 'elm-webpack-loader?cwd=' + elmSource
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      cwd: elmSource
+    }
+  }
   ...
 ```
 
@@ -80,7 +85,12 @@ You can add `maxInstances=8` to the loader:
 
 ```js
   ...
-  use: 'elm-webpack-loader?maxInstances=8'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      maxInstances: 8
+    }
+  }
   ...
 ```
 
@@ -94,25 +104,35 @@ You can add `cache=true` to the loader:
 
 ```js
   ...
-  use: 'elm-webpack-loader?cache=true'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      cache: true
+    }
+  }
   ...
 ```
 
-If you add this, when using `npm run watch`, the loader will only load the
-dependencies at startup. This could be performance improvement, but know that
-new files won't be picked up and so won't be watched until you restart webpack.
+If you add this, when using `npm run watch`, the loader will only load the dependencies at startup.
+This could be performance improvement, but know that new files won't be picked up and so won't be
+watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
 #### ForceWatch (default false)
 
-This loader will infer if you are running webpack in watch mode by checking
-the webpack arguments. If you are running webpack programmatically and
-wants to force this behaviour you can add `forceWatch=true` to the loader:
+This loader will infer if you are running webpack in watch mode by checking the webpack arguments.
+If you are running webpack programmatically and wants to force this behaviour you can add
+`forceWatch=true` to the loader:
 
 ```js
   ...
-  use: 'elm-webpack-loader?forceWatch=true'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      forceWatch: true
+    }
+  }
   ...
 ```
 
@@ -123,7 +143,12 @@ explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
 
 ```js
   ...
-  use: 'elm-webpack-loader?pathToMake=node_modules/.bin/elm-make',
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      pathToMake: 'node_modules/.bin/elm-make'
+    }
+  }
   ...
 ```
 
