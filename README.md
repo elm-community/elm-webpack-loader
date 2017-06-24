@@ -82,7 +82,7 @@ You can add `maxInstances=8` to the loader:
   ...
 ```
 
-Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm instances causing deadlocks. 
+Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm instances causing deadlocks.
 
 #### Cache (default false)
 
@@ -110,6 +110,75 @@ wants to force this behaviour you can add `forceWatch=true` to the loader:
   ...
   loader: 'elm-webpack?forceWatch=true'
   ...
+```
+
+#### Files (default - path to 'required' file)
+
+elm-make allows you to specify multiple modules to be combined into a single bundle
+
+```
+elm-make Main.elm Path/To/OtherModule.elm --output=combined.js
+```
+
+The `files` option allows you to do the same within webpack
+
+```
+module: {
+  loaders: [
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      loader: "elm-webpack",
+      options: {
+        files: [
+          path.resolve(__dirname, "path/to/Main.elm"),
+          path.resolve(__dirname, "Path/To/OtherModule.elm")
+        ]
+      }
+    }
+  ]
+}
+```
+(Note: It's only possible to pass array options when using the object style of loader configuration.)
+
+You're then able to use this with
+
+```
+import Elm from "./elm/Main";
+
+Elm.Main.embed(document.getElementById("main"));
+Elm.Path.To.OtherModule.embed(document.getElementById("other"));
+```
+
+##### Modules with elm-hot
+
+Because you must use the object style configuration it isn't possible to use the chained loader syntax (`loader:  'elm-hot!elm-webpack'`). Instead you may use [`webpack-combine-loaders`](https://www.npmjs.com/package/webpack-combine-loaders)
+
+```
+var combineLoaders = require("webpack-combine-loaders");
+
+module: {
+  loaders: [
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      loader: combineLoaders([
+        {
+          loader: "elm-hot"
+        },
+        {
+          loader: "elm-webpack",
+          options: {
+            files: [
+              path.resolve(__dirname, "path/to/Main.elm"),
+              path.resolve(__dirname, "Path/To/OtherModule.elm")
+            ]
+          }
+        }
+      ])
+    }
+  ]
+}
 ```
 
 #### Upstream options
@@ -163,7 +232,7 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 ### 4.3.0
 
 - Set maxInstances to 1
-- Patch watching behaviour 
+- Patch watching behaviour
 - Add `forceWatch` to force watch mode
 
 ### 4.2.0
