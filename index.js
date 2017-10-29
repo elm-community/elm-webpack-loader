@@ -49,6 +49,10 @@ var _addDirDependency = function(dirs){
   dirs.forEach(this.addContextDependency.bind(this));
 };
 
+var isFlagSet = function(args, flag) {
+  return typeof args[flag] !== "undefined" && args[flag];
+};
+
 /* Figures out if webpack has been run in watch mode
     This currently means either that the `watch` command was used
     Or it was run via `webpack-dev-server`
@@ -57,15 +61,17 @@ var isInWatchMode = function(){
   // parse the argv given to run this webpack instance
   var argv = yargs(process.argv)
       .alias('w', 'watch')
+      .alias('stdin', 'watch-stdin')
       .argv;
 
-  var hasWatchArg = typeof argv.watch !== "undefined" && argv.watch;
+  var hasWatchArg = isFlagSet(argv, 'watch');
+  var hasStdinArg = isFlagSet(argv, 'watch-stdin');
 
   var hasWebpackDevServer = Array.prototype.filter.call(process.argv, function (arg) {
     return arg.indexOf('webpack-dev-server') !== -1;
   }).length > 0;
 
-  return hasWebpackDevServer || hasWatchArg;
+  return hasWebpackDevServer || hasWatchArg || hasStdinArg;
 };
 
 /* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there

@@ -2,26 +2,32 @@ module.exports = {
   entry: './src/index.js',
 
   output: {
-    path: './dist',
+    path: __dirname + '/dist',
     filename: 'index.js'
   },
 
   resolve: {
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.js', '.elm']
+    extensions: ['.js', '.elm']
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.html$/,
         exclude: /node_modules/,
-        loader: 'file?name=[name].[ext]'
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]'
+          }
+        }
       },
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loader: '../../index.js'
+        use: {
+          loader: '../index.js'
+        }
       }
     ],
 
