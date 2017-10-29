@@ -1,0 +1,18 @@
+{
+  "name": "elm-webpack2-loader-example",
+  "version": "0.0.1",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --port 3000",
+    "errors": "webpack --display-error-details"
+  },
+  "dependencies": {
+    "file-loader": "^0.11.1",
+    "webpack": "^2.5.0",
+    "loader-utils": "^1.1.0",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
