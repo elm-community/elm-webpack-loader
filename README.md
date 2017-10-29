@@ -136,6 +136,75 @@ If you are running webpack programmatically and wants to force this behaviour yo
   ...
 ```
 
+#### Files (default - path to 'required' file)
+
+elm-make allows you to specify multiple modules to be combined into a single bundle
+
+```
+elm-make Main.elm Path/To/OtherModule.elm --output=combined.js
+```
+
+The `files` option allows you to do the same within webpack
+
+```
+module: {
+  loaders: [
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      loader: "elm-webpack",
+      options: {
+        files: [
+          path.resolve(__dirname, "path/to/Main.elm"),
+          path.resolve(__dirname, "Path/To/OtherModule.elm")
+        ]
+      }
+    }
+  ]
+}
+```
+(Note: It's only possible to pass array options when using the object style of loader configuration.)
+
+You're then able to use this with
+
+```
+import Elm from "./elm/Main";
+
+Elm.Main.embed(document.getElementById("main"));
+Elm.Path.To.OtherModule.embed(document.getElementById("other"));
+```
+
+##### Modules with elm-hot
+
+Because you must use the object style configuration it isn't possible to use the chained loader syntax (`loader:  'elm-hot!elm-webpack'`). Instead you may use [`webpack-combine-loaders`](https://www.npmjs.com/package/webpack-combine-loaders)
+
+```
+var combineLoaders = require("webpack-combine-loaders");
+
+module: {
+  loaders: [
+    {
+      test: /\.elm$/,
+      exclude: [/elm-stuff/, /node_modules/],
+      loader: combineLoaders([
+        {
+          loader: "elm-hot"
+        },
+        {
+          loader: "elm-webpack",
+          options: {
+            files: [
+              path.resolve(__dirname, "path/to/Main.elm"),
+              path.resolve(__dirname, "Path/To/OtherModule.elm")
+            ]
+          }
+        }
+      ])
+    }
+  ]
+}
+```
+
 #### Upstream options
 
 All options are sent down as an `options` object to node-elm-compiler. For example, you can
