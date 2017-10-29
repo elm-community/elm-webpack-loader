@@ -1,6 +1,6 @@
 # Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/elm-community/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/elm-community/elm-webpack-loader) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/7a5ws36eenwpdvgc/branch/master?svg=true)](https://ci.appveyor.com/project/elm-community/elm-webpack-loader/branch/master)
 
-[Webpack](http://webpack.github.io/docs/) loader for the [Elm](http://elm-lang.org/) programming language.
+[Webpack](https://webpack.js.org/) loader for the [Elm](http://elm-lang.org/) programming language.
 
 It is aware of Elm dependencies and tracks them. This means that in `--watch`
 mode, if you `require` an Elm module from a Webpack entry point, not only will
@@ -46,10 +46,10 @@ Documentation: [loaders](http://webpack.github.io/docs/using-loaders.html)
 ```js
 module.exports = {
   module: {
-    loaders: [{
+    rules: [{
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      loader: 'elm-webpack'
+      use: 'elm-webpack-loader'
     }]
   }
 };
@@ -65,12 +65,19 @@ You can add `cwd=elmSource` to the loader:
 ```js
 var elmSource = __dirname + '/elm/path/in/project'
   ...
-  loader: 'elm-webpack?cwd=' + elmSource
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      cwd: elmSource
+    }
+  }
   ...
 ```
 
 You can use this to specify a custom location within your project for your elm files. Note, this
-will cause the compiler to look for **all** elm source files in the specified directory. This approach is recommended as it allows the compile to watch elm-package.json as well as every file in the source directories.
+will cause the compiler to look for **all** elm source files in the specified directory. This
+approach is recommended as it allows the compile to watch elm-package.json as well as every file
+in the source directories.
 
 #### maxInstances (default 1)
 
@@ -78,11 +85,18 @@ You can add `maxInstances=8` to the loader:
 
 ```js
   ...
-  loader: 'elm-webpack?maxInstances=8'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      maxInstances: 8
+    }
+  }
   ...
 ```
 
-Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm instances causing deadlocks. 
+Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number
+less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm
+instances causing deadlocks.
 
 #### Cache (default false)
 
@@ -90,39 +104,56 @@ You can add `cache=true` to the loader:
 
 ```js
   ...
-  loader: 'elm-webpack?cache=true'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      cache: true
+    }
+  }
   ...
 ```
 
-If you add this, when using `npm run watch`, the loader will only load the
-dependencies at startup. This could be performance improvement, but know that
-new files won't be picked up and so won't be watched until you restart webpack.
+If you add this, when using `npm run watch`, the loader will only load the dependencies at startup.
+This could be performance improvement, but know that new files won't be picked up and so won't be
+watched until you restart webpack.
 
 This flag doesn't matter if you don't use watch mode.
 
 #### ForceWatch (default false)
 
-This loader will infer if you are running webpack in watch mode by checking
-the webpack arguments. If you are running webpack programmatically and
-wants to force this behaviour you can add `forceWatch=true` to the loader:
+This loader will infer if you are running webpack in watch mode by checking the webpack arguments.
+If you are running webpack programmatically and wants to force this behaviour you can add
+`forceWatch=true` to the loader:
 
 ```js
   ...
-  loader: 'elm-webpack?forceWatch=true'
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      forceWatch: true
+    }
+  }
   ...
 ```
 
 #### Upstream options
 
-All options are sent down as an `options` object to node-elm-compiler. For example, you can explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
+All options are sent down as an `options` object to node-elm-compiler. For example, you can
+explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
 
 ```js
   ...
-  loader: 'elm-webpack?pathToMake=node_modules/.bin/elm-make',
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      pathToMake: 'node_modules/.bin/elm-make'
+    }
+  }
   ...
 ```
 
-For a list all possible options, [consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/3fde73d/index.js#L12-L23).
+For a list all possible options,
+[consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/3fde73d/index.js#L12-L23).
 
 ## Notes
 
@@ -145,11 +176,13 @@ For a full featured example project that uses elm-webpack-loader see [pmdesgn/el
 ### noParse
 
 Webpack can complain about precompiled files (files compiled by `elm-make`).
-You can silence this warning with [noParse](https://webpack.github.io/docs/configuration.html#module-noparse). You can see it in use in the example.
+You can silence this warning with
+[noParse](https://webpack.github.io/docs/configuration.html#module-noparse). You can see it in use
+in the example.
 
 ```js
   module: {
-    loaders: [...],
+    rules: [...],
     noParse: [/.elm$/]
   }
 ```
@@ -163,7 +196,7 @@ You can silence this warning with [noParse](https://webpack.github.io/docs/confi
 ### 4.3.0
 
 - Set maxInstances to 1
-- Patch watching behaviour 
+- Patch watching behaviour
 - Add `forceWatch` to force watch mode
 
 ### 4.2.0
