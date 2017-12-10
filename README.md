@@ -74,7 +74,7 @@ var elmSource = __dirname + '/elm/path/in/project'
   ...
 ```
 
-You can use this to specify a custom location within your project for your elm files. Note, this
+`cwd` should be set to the same directory as your `elm-package.json` file. You can use this to specify a custom location within your project for your elm files. Note, this
 will cause the compiler to look for **all** elm source files in the specified directory. This
 approach is recommended as it allows the compile to watch elm-package.json as well as every file
 in the source directories.
