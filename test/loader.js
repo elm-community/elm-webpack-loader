@@ -163,6 +163,23 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
+  it('compiles successfully with runtimeOptions', function (done) {
+    var options = {
+      cwd: fixturesDir,
+      runtimeOptions: '-s'
+    };
+
+    var callback = function (loaderErr, loaderResult) {
+      compile(goodSource).then(function (compilerResult) {
+        assert.equal(hash(loaderResult), hash(compilerResult));
+        done();
+      });
+    };
+
+    context = mock(goodSource, null, options, callback);
+    loader.call(context, goodSource);
+  });
+
   xit('emits errors for incorrect source files', function (done) {
     var options = {
       cwd: fixturesDir
