@@ -15,7 +15,7 @@ var defaultOptions = {
   yes: true
 };
 
-var getFiles = function(options) {
+var getFiles = function (options) {
   var basepath = path.dirname(this.resourcePath);
   var files = options && options.files;
 
@@ -33,23 +33,23 @@ var getFiles = function(options) {
   return files;
 };
 
-var getOptions = function() {
-  var globalOptions = this.options.elm || {};
+var getOptions = function () {
+  var globalOptions = this.options && this.options.elm || {};
   var loaderOptions = loaderUtils.getOptions(this) || {};
   return Object.assign({
     emitWarning: this.emitWarning
   }, defaultOptions, globalOptions, loaderOptions);
 };
 
-var _addDependencies = function(dependency) {
+var _addDependencies = function (dependency) {
   this.addDependency(dependency);
 };
 
-var _addDirDependency = function(dirs){
+var _addDirDependency = function (dirs) {
   dirs.forEach(this.addContextDependency.bind(this));
 };
 
-var isFlagSet = function(args, flag) {
+var isFlagSet = function (args, flag) {
   return typeof args[flag] !== "undefined" && args[flag];
 };
 
@@ -57,12 +57,12 @@ var isFlagSet = function(args, flag) {
     This currently means either that the `watch` command was used
     Or it was run via `webpack-dev-server`
 */
-var isInWatchMode = function(){
+var isInWatchMode = function () {
   // parse the argv given to run this webpack instance
   var argv = yargs(process.argv)
-      .alias('w', 'watch')
-      .alias('stdin', 'watch-stdin')
-      .argv;
+    .alias('w', 'watch')
+    .alias('stdin', 'watch-stdin')
+    .argv;
 
   var hasWatchArg = isFlagSet(argv, 'watch');
   var hasStdinArg = isFlagSet(argv, 'watch-stdin');
@@ -76,32 +76,32 @@ var isInWatchMode = function(){
 
 /* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there
 */
-var filesToWatch = function(cwd){
+var filesToWatch = function (cwd) {
   var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
   var elmPackage = JSON.parse(readFile);
 
-  var paths = elmPackage["source-directories"].map(function(dir){
+  var paths = elmPackage["source-directories"].map(function (dir) {
     return path.join(cwd, dir);
   });
 
   return paths;
 };
 
-var dependenciesFor = function(resourcePath, files) {
+var dependenciesFor = function (resourcePath, files) {
   return findAllDependencies(files)
     .then(function (dependencies) {
       return unique(dependencies.concat(remove(resourcePath, files)));
     });
 }
 
-var findAllDependencies = function(files) {
+var findAllDependencies = function (files) {
   return Promise.all(files.map(
-    function(f) { return elmCompiler.findAllDependencies(f) }
+    function (f) { return elmCompiler.findAllDependencies(f) }
   ))
-  .then(flatten);
+    .then(flatten);
 }
 
-module.exports = function() {
+module.exports = function () {
   this.cacheable && this.cacheable();
 
   var callback = this.async();
@@ -122,9 +122,9 @@ module.exports = function() {
 
   // we only need to track deps if we are in watch mode
   // otherwise, we trust elm to do it's job
-  if (options.forceWatch || isInWatchMode()){
+  if (options.forceWatch || isInWatchMode()) {
     // we can do a glob to track deps we care about if cwd is set
-    if (typeof options.cwd !== "undefined" && options.cwd !== null){
+    if (typeof options.cwd !== "undefined" && options.cwd !== null) {
       // watch elm-package.json
       var elmPackage = path.join(options.cwd, "elm-package.json");
       addDependencies(elmPackage);
@@ -135,11 +135,11 @@ module.exports = function() {
 
     // find all the deps, adding them to the watch list if we successfully parsed everything
     // otherwise return an error which is currently ignored
-    var dependencies = dependenciesFor(resourcePath, files).then(function(dependencies){
+    var dependencies = dependenciesFor(resourcePath, files).then(function (dependencies) {
       // add each dependency to the tree
       dependencies.map(addDependencies);
       return { kind: 'success', result: true };
-    }).catch(function(v){
+    }).catch(function (v) {
       emitError(v);
       return { kind: 'error', error: v };
     })
@@ -151,13 +151,13 @@ module.exports = function() {
 
   var maxInstances = options.maxInstances;
 
-  if (typeof maxInstances === "undefined"){
+  if (typeof maxInstances === "undefined") {
     maxInstances = 1;
   } else {
     delete options.maxInstances;
   }
 
-  var intervalId = setInterval(function(){
+  var intervalId = setInterval(function () {
     if (runningInstances >= maxInstances) return;
     runningInstances += 1;
     clearInterval(intervalId);
@@ -165,18 +165,18 @@ module.exports = function() {
     // If we are running in watch mode, and we have previously compiled
     // the current file, then let the user know that elm-make is running
     // and can be slow
-    if (alreadyCompiledFiles.indexOf(resourcePath) > -1){
+    if (alreadyCompiledFiles.indexOf(resourcePath) > -1) {
       console.log('Started compiling Elm..');
     }
 
     var compilation = elmCompiler.compileToString(files, options)
-      .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
-      .catch(function(v) { runningInstances -= 1; return { kind: 'error', error: v }; });
+      .then(function (v) { runningInstances -= 1; return { kind: 'success', result: v }; })
+      .catch(function (v) { runningInstances -= 1; return { kind: 'error', error: v }; });
 
     promises.push(compilation);
 
     Promise.all(promises)
-      .then(function(results) {
+      .then(function (results) {
         var output = results[results.length - 1]; // compilation output is always last
 
         if (output.kind == 'success') {
@@ -186,7 +186,7 @@ module.exports = function() {
           output.error.message = 'Compiler process exited with error ' + output.error.message;
           callback(output.error);
         }
-      }).catch(function(err){
+      }).catch(function (err) {
         callback(err);
       });
 
@@ -197,19 +197,19 @@ module.exports = function() {
 // HELPERS
 
 function flatten(arrayOfArrays) {
-  return arrayOfArrays.reduce(function(flattened, array) {
+  return arrayOfArrays.reduce(function (flattened, array) {
     return flattened.concat(array)
   }, []);
 }
 
 function unique(items) {
-  return items.filter(function(item, index, array) {
+  return items.filter(function (item, index, array) {
     return array.indexOf(item) === index;
   });
 }
 
 function remove(condemned, items) {
-  return items.filter(function(item) {
+  return items.filter(function (item) {
     return item !== condemned;
   });
 }
