@@ -1,0 +1,19 @@
+{
+  "name": "elm-webpack4-loader-example",
+  "version": "0.0.1",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "dev": "webpack-dev-server --mode development --port 3000",
+    "errors": "webpack --mode development --display-error-details"
+  },
+  "dependencies": {
+    "file-loader": "1.1.10",
+    "loader-utils": "1.1.0",
+    "webpack": "4.0.1",
+    "webpack-cli": "2.0.9",
+    "webpack-dev-server": "3.0.0"
+  }
+}
