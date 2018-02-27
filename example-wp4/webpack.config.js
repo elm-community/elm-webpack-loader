@@ -1,8 +1,8 @@
 var path = require('path');
 
 module.exports = {
-  // If yur entry-point is src/index.js and
-  // your output is in /dist, you can ommit
+  // If your entry-point is at "src/index.js" and
+  // your output is in "/dist", you can ommit
   // these parts of the config
   module: {
     rules: [{
