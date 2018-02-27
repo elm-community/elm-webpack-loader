@@ -34,7 +34,7 @@ var getFiles = function(options) {
 };
 
 var getOptions = function() {
-  var globalOptions = this.options.elm || {};
+  var globalOptions = this.options ? this.options.elm : {};
   var loaderOptions = loaderUtils.getOptions(this) || {};
   return Object.assign({
     emitWarning: this.emitWarning
