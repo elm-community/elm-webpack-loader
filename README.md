@@ -136,6 +136,30 @@ If you are running webpack programmatically and wants to force this behaviour yo
   ...
 ```
 
+#### RuntimeOptions (default `undefined`)
+
+This allows you to control aspects of how `elm-make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/7.10.1/docs/html/users_guide/runtime-control.html).
+
+The 0.18 version of `elm-make` supports a limited set of those options, the most useful of which is
+for profiling a build.  To profile a build use the settings `runtimeOptions: '-s'`, which will print
+out information on how much time is spent in mutations, in the garbage collector, etc.
+
+_Note_: Using the flags below requires building a new `elm-make` binary with `-rtsopts` enabled!
+
+If you notice your build spending a lot of time in the garbage collector, you can likely optimize it
+with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      runtimeOptions: '-A128M -H128M -n8m'
+    }
+  }
+  ...
+```
+
 #### Files (default - path to 'required' file)
 
 elm-make allows you to specify multiple modules to be combined into a single bundle
