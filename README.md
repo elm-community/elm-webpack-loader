@@ -282,6 +282,18 @@ in the example.
 
 ## Revisions
 
+### 4.5.0
+
+- Support for Webpack 3+
+- Upgrade node-elm-compiler to 4.5.0+
+
+### 4.4.0
+
+- Support for Webpack 2+
+- Support for multiple main modules
+- Support for `--watch-stdin`
+- Add an example for Webpack 2+
+
 ### 4.3.1
 
 - Fix a bug where maxInstances might end up being higher than expected
