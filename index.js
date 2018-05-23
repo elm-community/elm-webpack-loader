@@ -30,6 +30,11 @@ var getFiles = function(options) {
   }
 
   delete options.files;
+  
+  if (options.appendFilesToExisting) {
+    files.push(this.resourcePath);
+  }
+
   return files;
 };
 
