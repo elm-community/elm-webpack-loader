@@ -12,6 +12,7 @@ var alreadyCompiledFiles = [];
 var defaultOptions = {
   cache: false,
   forceWatch: false,
+  optimize: false
 };
 
 var getFiles = function(options) {
