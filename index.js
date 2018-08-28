@@ -179,10 +179,14 @@ module.exports = function() {
       .then(function(results) {
         var output = results[results.length - 1]; // compilation output is always last
 
-        if (output.kind == 'success') {
+        if (output.kind === 'success') {
           alreadyCompiledFiles.push(resourcePath);
           callback(null, output.result);
         } else {
+          if (typeof output.error === 'string') {
+            output.error = new Error(output.error);
+          }
+
           output.error.message = 'Compiler process exited with error ' + output.error.message;
           callback(output.error);
         }
