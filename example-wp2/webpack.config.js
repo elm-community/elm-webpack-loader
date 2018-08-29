@@ -29,8 +29,7 @@ module.exports = {
         // loader: "elm-webpack-loader",
         loader: '../index.js',
         options: {
-          debug: true,
-          warn: true
+          debug: true
         }
       }
     ]

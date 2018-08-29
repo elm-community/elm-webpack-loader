@@ -12,7 +12,7 @@ var alreadyCompiledFiles = [];
 var defaultOptions = {
   cache: false,
   forceWatch: false,
-  yes: true
+  optimize: false
 };
 
 var getFiles = function(options) {
@@ -38,9 +38,7 @@ var getOptions = function() {
     ? this.options.elm || {}
     : this.query.elm || {};
   var loaderOptions = loaderUtils.getOptions(this) || {};
-  return Object.assign({
-    emitWarning: this.emitWarning
-  }, defaultOptions, globalOptions, loaderOptions);
+  return Object.assign({}, defaultOptions, globalOptions, loaderOptions);
 };
 
 var _addDependencies = function(dependency) {
@@ -76,10 +74,10 @@ var isInWatchMode = function(){
   return hasWebpackDevServer || hasWatchArg || hasStdinArg;
 };
 
-/* Takes a working dir, tries to read elm-package.json, then grabs all the modules from in there
+/* Takes a working dir, tries to read elm.json, then grabs all the modules from in there
 */
 var filesToWatch = function(cwd){
-  var readFile = fs.readFileSync(path.join(cwd, "elm-package.json"), 'utf8');
+  var readFile = fs.readFileSync(path.join(cwd, "elm.json"), 'utf8');
   var elmPackage = JSON.parse(readFile);
 
   var paths = elmPackage["source-directories"].map(function(dir){
@@ -127,11 +125,11 @@ module.exports = function() {
   if (options.forceWatch || isInWatchMode()){
     // we can do a glob to track deps we care about if cwd is set
     if (typeof options.cwd !== "undefined" && options.cwd !== null){
-      // watch elm-package.json
-      var elmPackage = path.join(options.cwd, "elm-package.json");
+      // watch elm.json
+      var elmPackage = path.join(options.cwd, "elm.json");
       addDependencies(elmPackage);
       var dirs = filesToWatch(options.cwd);
-      // watch all the dirs in elm-package.json
+      // watch all the dirs in elm.json
       addDirDependency.bind(this)(dirs);
     }
 
@@ -165,7 +163,7 @@ module.exports = function() {
     clearInterval(intervalId);
 
     // If we are running in watch mode, and we have previously compiled
-    // the current file, then let the user know that elm-make is running
+    // the current file, then let the user know that `elm make` is running
     // and can be slow
     if (alreadyCompiledFiles.indexOf(resourcePath) > -1){
       console.log('Started compiling Elm..');
@@ -181,10 +179,14 @@ module.exports = function() {
       .then(function(results) {
         var output = results[results.length - 1]; // compilation output is always last
 
-        if (output.kind == 'success') {
+        if (output.kind === 'success') {
           alreadyCompiledFiles.push(resourcePath);
           callback(null, output.result);
         } else {
+          if (typeof output.error === 'string') {
+            output.error = new Error(output.error);
+          }
+
           output.error.message = 'Compiler process exited with error ' + output.error.message;
           callback(output.error);
         }
