@@ -282,6 +282,11 @@ in the example.
 
 ## Revisions
 
+### 5.0.0
+
+- Support for Elm 0.19, drops support for Elm 0.18.
+
+
 ### 4.3.1
 
 - Fix a bug where maxInstances might end up being higher than expected
