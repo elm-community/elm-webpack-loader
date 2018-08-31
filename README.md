@@ -74,7 +74,7 @@ var elmSource = __dirname + '/elm/path/in/project'
   ...
 ```
 
-`cwd` should be set to the same directory as your `elm-package.json` file. You can use this to specify a custom location within your project for your elm files. Note, this
+`cwd` should be set to the same directory as your `elm.json` file. You can use this to specify a custom location within your project for your elm files. Note, this
 will cause the compiler to look for **all** elm source files in the specified directory. This
 approach is recommended as it allows the compile to watch elm-package.json as well as every file
 in the source directories.
@@ -164,13 +164,13 @@ with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
 
 elm-make allows you to specify multiple modules to be combined into a single bundle
 
-```
+```sh
 elm-make Main.elm Path/To/OtherModule.elm --output=combined.js
 ```
 
 The `files` option allows you to do the same within webpack
 
-```
+```js
 module: {
   loaders: [
     {
@@ -191,7 +191,7 @@ module: {
 
 You're then able to use this with
 
-```
+```js
 import Elm from "./elm/Main";
 
 Elm.Main.embed(document.getElementById("main"));
@@ -202,7 +202,7 @@ Elm.Path.To.OtherModule.embed(document.getElementById("other"));
 
 Because you must use the object style configuration it isn't possible to use the chained loader syntax (`loader:  'elm-hot!elm-webpack'`). Instead you may use [`webpack-combine-loaders`](https://www.npmjs.com/package/webpack-combine-loaders)
 
-```
+```js
 var combineLoaders = require("webpack-combine-loaders");
 
 module: {
@@ -255,7 +255,7 @@ For a list all possible options,
 You can find an example in the `example` folder.
 To run:
 
-```
+```sh
 npm install
 npm run build
 ```
