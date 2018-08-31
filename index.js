@@ -67,11 +67,16 @@ var isInWatchMode = function(){
   var hasWatchArg = isFlagSet(argv, 'watch');
   var hasStdinArg = isFlagSet(argv, 'watch-stdin');
 
+  var hasWebpackServe = Array.prototype.filter.call(process.argv, function (arg) {
+    return arg.indexOf('webpack-serve') !== -1;
+  }).length > 0;
+
   var hasWebpackDevServer = Array.prototype.filter.call(process.argv, function (arg) {
     return arg.indexOf('webpack-dev-server') !== -1;
   }).length > 0;
 
-  return hasWebpackDevServer || hasWatchArg || hasStdinArg;
+
+  return hasWebpackServe || hasWebpackDevServer || hasWatchArg || hasStdinArg;
 };
 
 /* Takes a working dir, tries to read elm.json, then grabs all the modules from in there
