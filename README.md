@@ -136,6 +136,21 @@ If you are running webpack programmatically and wants to force this behaviour yo
   ...
 ```
 
+#### Optimize (default false)
+
+When building a production bundle in Elm 0.19 you should pass the `--optimize` flag to Elm make. See <https://elm-lang.org/0.19.0/optimize>
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      optimize: true
+    }
+  }
+  ...
+```
+
 #### RuntimeOptions (default `undefined`)
 
 This allows you to control aspects of how `elm-make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/7.10.1/docs/html/users_guide/runtime-control.html).
