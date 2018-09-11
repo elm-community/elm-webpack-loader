@@ -138,7 +138,7 @@ If you are running webpack programmatically and wants to force this behaviour yo
 
 #### Optimize (default false)
 
-When building a production bundle in Elm 0.19 you should pass the `--optimize` flag to Elm make. See <https://elm-lang.org/0.19.0/optimize>
+When building a production bundle it is recommended to pass the `--optimize` flag to Elm make. See <https://elm-lang.org/0.19.0/optimize>
 
 ```js
   ...
