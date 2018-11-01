@@ -136,6 +136,21 @@ If you are running webpack programmatically and wants to force this behaviour yo
   ...
 ```
 
+#### Optimize (default false)
+
+This loader will enable elm optimization (dead code elimination).
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      optimize: true
+    }
+  }
+  ...
+```
+
 #### RuntimeOptions (default `undefined`)
 
 This allows you to control aspects of how `elm-make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/7.10.1/docs/html/users_guide/runtime-control.html).
