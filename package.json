@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/elm-community/elm-webpack-loader",
   "dependencies": {
-    "elm": "^0.19.0",
+    "elm": "0.19.0-no-deps",
     "glob": "^7.1.1",
     "loader-utils": "^1.0.2",
     "node-elm-compiler": "^5.0.0",
@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "chai": "^3.4.1",
-    "mocha": "3.0.2"
+    "mocha": "^6.1.4"
   }
 }
