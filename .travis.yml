@@ -10,8 +10,10 @@ os:
 
 env:
   matrix:
-    - ELM_VERSION=0.19 TARGET_NODE_VERSION=node
-    - ELM_VERSION=0.19 TARGET_NODE_VERSION=4.2
+    - ELM_VERSION=0.19.0-no-deps TARGET_NODE_VERSION=8
+    - ELM_VERSION=0.19.0-no-deps TARGET_NODE_VERSION=10
+    - ELM_VERSION=0.19.0-no-deps TARGET_NODE_VERSION=11
+    - ELM_VERSION=0.19.0-no-deps TARGET_NODE_VERSION=12
 
 before_install:
   - if [ ${TRAVIS_OS_NAME} == "osx" ];
