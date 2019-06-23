@@ -1,6 +1,8 @@
 'use strict';
 
 require('./index.html');
-var Elm = require('./Main.elm');
+var elm = require('./Main.elm');
 
-Elm.Main.embed(document.getElementById('main'));
+var app = elm.Elm.Main.init({
+  node: document.getElementById('main')
+});
