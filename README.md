@@ -232,14 +232,14 @@ module: {
 #### Upstream options
 
 All options are sent down as an `options` object to node-elm-compiler. For example, you can
-explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
+explicitly pick the local `elm-make` binary by setting the option `pathToElm`:
 
 ```js
   ...
   use: {
     loader: 'elm-webpack-loader',
     options: {
-      pathToMake: 'node_modules/.bin/elm-make'
+      pathToElm: 'node_modules/.bin/elm-make'
     }
   }
   ...
