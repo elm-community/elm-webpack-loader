@@ -213,7 +213,7 @@ Elm.Main.init({node: document.getElementById("main")});
 Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
 ```
 
-##### Modules with elm-hot
+##### Hot module reloading
 
 Hot module reloading is supported by installing [elm-hot-webpack-loader](https://github.com/klazuka/elm-hot-webpack-loader)
 and adding it to your list of loaders. It should look something like this:
