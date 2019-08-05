@@ -8,6 +8,8 @@ $ npm install
 $ elm-make
 ```
 
+You may also need to run `npm install` in the parent directory.
+
 Now build the example using webpack:
 
 ```

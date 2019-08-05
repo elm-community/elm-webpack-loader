@@ -13,10 +13,7 @@ be watched for changes as well.
 $ npm install --save elm-webpack-loader
 ```
 
-
 ## Usage
-
-#### Webpack 2
 
 Documentation: [rules](https://webpack.js.org/configuration/module/#rule)
 
@@ -32,24 +29,6 @@ module.exports = {
         loader: 'elm-webpack-loader',
         options: {}
       }
-    }]
-  }
-};
-```
-
-#### Webpack 1
-
-Documentation: [loaders](http://webpack.github.io/docs/using-loaders.html)
-
-`webpack.config.js`:
-
-```js
-module.exports = {
-  module: {
-    rules: [{
-      test: /\.elm$/,
-      exclude: [/elm-stuff/, /node_modules/],
-      use: 'elm-webpack-loader'
     }]
   }
 };
