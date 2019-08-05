@@ -215,34 +215,26 @@ Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
 
 ##### Modules with elm-hot
 
-Because you must use the object style configuration it isn't possible to use the chained loader syntax (`loader:  'elm-hot!elm-webpack'`). Instead you may use [`webpack-combine-loaders`](https://www.npmjs.com/package/webpack-combine-loaders)
+Hot module reloading is supported by installing [elm-hot-webpack-loader](https://github.com/klazuka/elm-hot-webpack-loader)
+and adding it to your list of loaders. It should look something like this:
 
 ```js
-var combineLoaders = require("webpack-combine-loaders");
-
 module: {
-  loaders: [
+  rules: [
     {
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      loader: combineLoaders([
-        {
-          loader: "elm-hot"
-        },
-        {
-          loader: "elm-webpack",
-          options: {
-            files: [
-              path.resolve(__dirname, "path/to/Main.elm"),
-              path.resolve(__dirname, "Path/To/OtherModule.elm")
-            ]
-          }
-        }
-      ])
+      use: [
+        { loader: 'elm-hot-webpack-loader' },
+        { loader: 'elm-webpack-loader' }
+      ]
     }
   ]
 }
 ```
+
+**IMPORTANT**: `elm-hot-webpack-loader` must be placed in the list immediately *before* `elm-webpack-loader`.
+
 
 #### Upstream options
 
