@@ -289,6 +289,11 @@ in the example.
 
 ## Revisions
 
+### 6.0.0
+
+- Elm is now a peer dependency.
+- Documentation fixes.
+
 ### 5.0.0
 
 - Support for Elm 0.19, drops support for Elm 0.18.
