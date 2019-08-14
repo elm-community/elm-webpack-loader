@@ -169,7 +169,7 @@ with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
   use: {
     loader: 'elm-webpack-loader',
     options: {
-      runtimeOptions: '-A128M -H128M -n8m'
+      runtimeOptions: ['-A128M', '-H128M', '-n8m']
     }
   }
   ...
