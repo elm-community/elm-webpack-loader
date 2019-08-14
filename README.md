@@ -177,10 +177,10 @@ with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
 
 #### Files (default - path to 'required' file)
 
-elm-make allows you to specify multiple modules to be combined into a single bundle
+elm make allows you to specify multiple modules to be combined into a single bundle
 
 ```sh
-elm-make Main.elm Path/To/OtherModule.elm --output=combined.js
+elm make Main.elm Path/To/OtherModule.elm --output=combined.js
 ```
 
 The `files` option allows you to do the same within webpack
@@ -239,14 +239,14 @@ module: {
 #### Upstream options
 
 All options are sent down as an `options` object to node-elm-compiler. For example, you can
-explicitly pick the local `elm-make` binary by setting the option `pathToMake`:
+explicitly pick the local `elm` binary by setting the option `pathToElm`:
 
 ```js
   ...
   use: {
     loader: 'elm-webpack-loader',
     options: {
-      pathToMake: 'node_modules/.bin/elm-make'
+      pathToElm: 'node_modules/.bin/elm'
     }
   }
   ...
@@ -275,7 +275,7 @@ For a full featured example project that uses elm-webpack-loader see [pmdesgn/el
 
 ### noParse
 
-Webpack can complain about precompiled files (files compiled by `elm-make`).
+Webpack can complain about precompiled files (files compiled by `elm make`).
 You can silence this warning with
 [noParse](https://webpack.github.io/docs/configuration.html#module-noparse). You can see it in use
 in the example.
