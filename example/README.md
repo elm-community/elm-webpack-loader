@@ -5,7 +5,7 @@ After cloning the repository, install all the necessary dependencies:
 ```
 $ cd elm-webpack-loader/example
 $ npm install
-$ elm-make
+$ elm make
 ```
 
 You may also need to run `npm install` in the parent directory.
