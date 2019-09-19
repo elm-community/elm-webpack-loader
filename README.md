@@ -132,7 +132,7 @@ When building a production bundle it is recommended to pass the `--optimize` fla
 
 #### RuntimeOptions (default `undefined`)
 
-This allows you to control aspects of how `elm make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/7.10.1/docs/html/users_guide/runtime-control.html).
+This allows you to control aspects of how `elm make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime_control.html).
 
 The 0.19 version of `elm make` supports a limited set of those options, the most useful of which is
 for profiling a build.  To profile a build use the settings `runtimeOptions: '-s'`, which will print
