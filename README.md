@@ -13,10 +13,7 @@ be watched for changes as well.
 $ npm install --save elm-webpack-loader
 ```
 
-
 ## Usage
-
-#### Webpack 2
 
 Documentation: [rules](https://webpack.js.org/configuration/module/#rule)
 
@@ -32,24 +29,6 @@ module.exports = {
         loader: 'elm-webpack-loader',
         options: {}
       }
-    }]
-  }
-};
-```
-
-#### Webpack 1
-
-Documentation: [loaders](http://webpack.github.io/docs/using-loaders.html)
-
-`webpack.config.js`:
-
-```js
-module.exports = {
-  module: {
-    rules: [{
-      test: /\.elm$/,
-      exclude: [/elm-stuff/, /node_modules/],
-      use: 'elm-webpack-loader'
     }]
   }
 };
@@ -76,7 +55,7 @@ var elmSource = __dirname + '/elm/path/in/project'
 
 `cwd` should be set to the same directory as your `elm.json` file. You can use this to specify a custom location within your project for your elm files. Note, this
 will cause the compiler to look for **all** elm source files in the specified directory. This
-approach is recommended as it allows the compile to watch elm-package.json as well as every file
+approach is recommended as it allows the compile to watch elm.json as well as every file
 in the source directories.
 
 #### maxInstances (default 1)
@@ -113,7 +92,7 @@ You can add `cache=true` to the loader:
   ...
 ```
 
-If you add this, when using `npm run watch`, the loader will only load the dependencies at startup.
+If you add this, when using watch mode, the loader will only load the dependencies at startup.
 This could be performance improvement, but know that new files won't be picked up and so won't be
 watched until you restart webpack.
 
@@ -153,13 +132,13 @@ When building a production bundle it is recommended to pass the `--optimize` fla
 
 #### RuntimeOptions (default `undefined`)
 
-This allows you to control aspects of how `elm-make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/7.10.1/docs/html/users_guide/runtime-control.html).
+This allows you to control aspects of how `elm make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime_control.html).
 
-The 0.18 version of `elm-make` supports a limited set of those options, the most useful of which is
+The 0.19 version of `elm make` supports a limited set of those options, the most useful of which is
 for profiling a build.  To profile a build use the settings `runtimeOptions: '-s'`, which will print
 out information on how much time is spent in mutations, in the garbage collector, etc.
 
-_Note_: Using the flags below requires building a new `elm-make` binary with `-rtsopts` enabled!
+_Note_: Using the flags below requires building a new `elm make` binary with `-rtsopts` enabled!
 
 If you notice your build spending a lot of time in the garbage collector, you can likely optimize it
 with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
@@ -191,7 +170,7 @@ module: {
     {
       test: /\.elm$/,
       exclude: [/elm-stuff/, /node_modules/],
-      loader: "elm-webpack",
+      loader: 'elm-webpack-loader',
       options: {
         files: [
           path.resolve(__dirname, "path/to/Main.elm"),
