@@ -14,6 +14,6 @@
     "loader-utils": "1.1.0",
     "webpack": "4.0.1",
     "webpack-cli": "2.0.9",
-    "webpack-dev-server": "3.0.0"
+    "webpack-dev-server": "3.9.0"
   }
 }
