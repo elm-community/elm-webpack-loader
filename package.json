@@ -35,6 +35,6 @@
     "mocha": "^6.1.4"
   },
   "peerDependencies": {
-    "elm": "0.19.0-no-deps || ^0.19.1"
+    "elm": "^0.19.1-2 || 0.19.0-no-deps"
   }
 }
