@@ -7,6 +7,8 @@ mode, if you `require` an Elm module from a Webpack entry point, not only will
 that `.elm` file be watched for changes, but any other Elm modules it imports will
 be watched for changes as well.
 
+Checkout [Jetpack](https://github.com/NoRedInk/jetpack) as an alternative to Webpack!
+
 ## Installation
 
 ```sh
