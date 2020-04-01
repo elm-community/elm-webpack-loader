@@ -1,7 +1,8 @@
 'use strict';
 
-var fs = require("fs")
-var path = require('path')
+var fs = require("fs");
+var path = require('path');
+var temp = require("temp").track();
 var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
@@ -173,7 +174,7 @@ module.exports = function() {
       console.log('Started compiling Elm..');
     }
 
-    var compilation = elmCompiler.compileToString(files, options)
+    var compilation = compile(files, options)
       .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
       .catch(function(v) { runningInstances -= 1; return { kind: 'error', error: v }; });
 
@@ -199,6 +200,54 @@ module.exports = function() {
       });
 
   }, 200);
+}
+
+
+// Functions pulled and modified from node-elm-compiler:
+
+// this was called compileToString
+// - altered to log output to console instead to retain formatting
+function compile(sources, options) {
+  var suffix = getSuffix(options.output, '.js');
+  return new Promise(function (resolve, reject) {
+    temp.open({ suffix: suffix }, function (err, info) {
+      if (err) {
+        return reject(err);
+      }
+      options.output = info.path;
+      options.processOpts = { stdio: 'inherit' };
+
+      var compiler;
+
+      try {
+        compiler = elmCompiler.compile(sources, options);
+      }
+      catch (compileError) {
+        return reject(compileError);
+      }
+
+      compiler.on("close", function (exitCode) {
+        if (exitCode !== 0) {
+          return reject('Compilation failed');
+        }
+        else if (options.verbose) {
+          console.log(output);
+        }
+        fs.readFile(info.path, { encoding: "utf8" }, function (err, data) {
+          return err ? reject(err) : resolve(data);
+        });
+      });
+    });
+  });
+}
+
+function getSuffix(outputPath, defaultSuffix) {
+  if (outputPath) {
+    return path.extname(outputPath) || defaultSuffix;
+  }
+  else {
+    return defaultSuffix;
+  }
 }
 
 
