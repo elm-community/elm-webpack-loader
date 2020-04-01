@@ -16,7 +16,6 @@ var defaultOptions = {
 };
 
 var getFiles = function(options) {
-  var basepath = path.dirname(this.resourcePath);
   var files = options && options.files;
 
   if (files === undefined) return [this.resourcePath];
