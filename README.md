@@ -270,6 +270,10 @@ in the example.
 
 ## Revisions
 
+### 6.0.2
+
+- Logs build output directly to stdout to retain formatting
+
 ### 6.0.0
 
 - Elm is now a peer dependency.
