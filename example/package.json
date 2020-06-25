@@ -10,10 +10,10 @@
     "errors": "webpack --mode development --display-error-details"
   },
   "dependencies": {
-    "file-loader": "1.1.10",
-    "loader-utils": "1.1.0",
-    "webpack": "4.0.1",
-    "webpack-cli": "2.0.9",
-    "webpack-dev-server": "3.9.0"
+    "file-loader": "^6.0.0",
+    "loader-utils": "^2.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   }
 }
