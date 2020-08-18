@@ -193,6 +193,7 @@ module.exports = function() {
           }
 
           output.error.message = 'Compiler process exited with error ' + output.error.message;
+          output.error.stack = null;
           callback(output.error);
         }
       }).catch(function(err){
