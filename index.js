@@ -7,11 +7,9 @@ var loaderUtils = require('loader-utils');
 var elmCompiler = require('node-elm-compiler');
 var yargs = require('yargs');
 
-var runningInstances = 0;
 var alreadyCompiledFiles = [];
 
 var defaultOptions = {
-  cache: false,
   forceWatch: false,
   optimize: false
 };
@@ -154,53 +152,38 @@ module.exports = function() {
 
   delete options.forceWatch
 
-  var maxInstances = options.maxInstances;
-
-  if (typeof maxInstances === "undefined"){
-    maxInstances = 1;
-  } else {
-    delete options.maxInstances;
+  // If we are running in watch mode, and we have previously compiled
+  // the current file, then let the user know that `elm make` is running
+  // and can be slow
+  if (alreadyCompiledFiles.indexOf(resourcePath) > -1){
+    console.log('Started compiling Elm...');
   }
 
-  var intervalId = setInterval(function(){
-    if (runningInstances >= maxInstances) return;
-    runningInstances += 1;
-    clearInterval(intervalId);
+  var compilation = compile(files, options)
+    .then(function(v) { return { kind: 'success', result: v }; })
+    .catch(function(v) { return { kind: 'error', error: v }; });
 
-    // If we are running in watch mode, and we have previously compiled
-    // the current file, then let the user know that `elm make` is running
-    // and can be slow
-    if (alreadyCompiledFiles.indexOf(resourcePath) > -1){
-      console.log('Started compiling Elm..');
-    }
+  promises.push(compilation);
 
-    var compilation = compile(files, options)
-      .then(function(v) { runningInstances -= 1; return { kind: 'success', result: v }; })
-      .catch(function(v) { runningInstances -= 1; return { kind: 'error', error: v }; });
-
-    promises.push(compilation);
-
-    Promise.all(promises)
-      .then(function(results) {
+  Promise.all(promises)
+    .then(function(results) {
         var output = results[results.length - 1]; // compilation output is always last
 
         if (output.kind === 'success') {
-          alreadyCompiledFiles.push(resourcePath);
-          callback(null, output.result);
+            alreadyCompiledFiles.push(resourcePath);
+            callback(null, output.result);
         } else {
-          if (typeof output.error === 'string') {
-            output.error = new Error(output.error);
-          }
+            if (typeof output.error === 'string') {
+                output.error = new Error(output.error);
+            }
 
-          output.error.message = 'Compiler process exited with error ' + output.error.message;
-          output.error.stack = null;
-          callback(output.error);
+            output.error.message = 'Compiler process exited with error ' + output.error.message;
+            output.error.stack = null;
+            callback(output.error);
         }
-      }).catch(function(err){
+    }).catch(function(err){
         callback(err);
-      });
-
-  }, 200);
+    });
 }
 
 

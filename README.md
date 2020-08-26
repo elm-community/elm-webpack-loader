@@ -59,46 +59,6 @@ will cause the compiler to look for **all** elm source files in the specified di
 approach is recommended as it allows the compile to watch elm.json as well as every file
 in the source directories.
 
-#### maxInstances (default 1)
-
-You can add `maxInstances=8` to the loader:
-
-```js
-  ...
-  use: {
-    loader: 'elm-webpack-loader',
-    options: {
-      maxInstances: 8
-    }
-  }
-  ...
-```
-
-Set a limit to the number of maxInstances of elm that can spawned. This should be set to a number
-less than the number of cores your machine has. The ideal number is 1, as it will prevent Elm
-instances causing deadlocks.
-
-#### Cache (default false)
-
-You can add `cache=true` to the loader:
-
-```js
-  ...
-  use: {
-    loader: 'elm-webpack-loader',
-    options: {
-      cache: true
-    }
-  }
-  ...
-```
-
-If you add this, when using watch mode, the loader will only load the dependencies at startup.
-This could be performance improvement, but know that new files won't be picked up and so won't be
-watched until you restart webpack.
-
-This flag doesn't matter if you don't use watch mode.
-
 #### ForceWatch (default false)
 
 This loader will infer if you are running webpack in watch mode by checking the webpack arguments.
