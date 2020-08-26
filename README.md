@@ -1,4 +1,4 @@
-# Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/elm-community/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/elm-community/elm-webpack-loader) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/7a5ws36eenwpdvgc/branch/master?svg=true)](https://ci.appveyor.com/project/elm-community/elm-webpack-loader/branch/master)
+# Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/elm-community/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/elm-community/elm-webpack-loader) 
 
 [Webpack](https://webpack.js.org/) loader for the [Elm](http://elm-lang.org/) programming language.
 
@@ -6,8 +6,6 @@ It is aware of Elm dependencies and tracks them. This means that in `--watch`
 mode, if you `require` an Elm module from a Webpack entry point, not only will
 that `.elm` file be watched for changes, but any other Elm modules it imports will
 be watched for changes as well.
-
-Checkout [Jetpack](https://github.com/NoRedInk/jetpack) as an alternative to Webpack!
 
 ## Installation
 
@@ -43,6 +41,7 @@ See the [examples](#example) section below for the complete webpack configuratio
 #### cwd (default null) *Recommended*
 
 You can add `cwd=elmSource` to the loader:
+
 ```js
 var elmSource = __dirname + '/elm/path/in/project'
   ...
