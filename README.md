@@ -59,26 +59,9 @@ will cause the compiler to look for **all** elm source files in the specified di
 approach is recommended as it allows the compile to watch elm.json as well as every file
 in the source directories.
 
-#### ForceWatch (default false)
+#### Optimize (default is true in production mode)
 
-This loader will infer if you are running webpack in watch mode by checking the webpack arguments.
-If you are running webpack programmatically and wants to force this behaviour you can add
-`forceWatch=true` to the loader:
-
-```js
-  ...
-  use: {
-    loader: 'elm-webpack-loader',
-    options: {
-      forceWatch: true
-    }
-  }
-  ...
-```
-
-#### Optimize (default false)
-
-When building a production bundle it is recommended to pass the `--optimize` flag to Elm make. See <https://elm-lang.org/0.19.0/optimize>
+Set this to true to compile bundle in optimized mode. See <https://elm-lang.org/0.19.0/optimize> for more information.
 
 ```js
   ...
@@ -86,6 +69,21 @@ When building a production bundle it is recommended to pass the `--optimize` fla
     loader: 'elm-webpack-loader',
     options: {
       optimize: true
+    }
+  }
+  ...
+```
+
+#### Debug (default is true in development mode)
+
+Set this to true to enable Elm's time traveling debugger. 
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      debug: true
     }
   }
   ...
@@ -229,9 +227,13 @@ in the example.
 
 ## Revisions
 
-### 6.0.2
+### 7.0.0
 
-- Logs build output directly to stdout to retain formatting
+- Logs build output directly to stdout to retain formatting.
+- Remove stack trace for errors, as they're never relevant.
+- `optimize` and `debug` flags are now set by default depending on the webpack mode.
+- Removed several options which provide little benefit.
+- Reduced number of dependencies.
 
 ### 6.0.0
 
@@ -241,7 +243,6 @@ in the example.
 ### 5.0.0
 
 - Support for Elm 0.19, drops support for Elm 0.18.
-
 
 ### 4.3.1
 
