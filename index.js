@@ -26,7 +26,6 @@ var getFiles = function(options) {
 var getOptions = function(mode) {
     var defaultOptions = {
         debug: mode === "development",
-        verbose: mode === "development",
         optimize: mode === "production",
     };
 
@@ -180,9 +179,7 @@ function compile(sources, options) {
                 if (exitCode !== 0) {
                     return reject("Compilation failed");
                 }
-                else if (options.verbose) {
-                    console.log(output);
-                }
+
                 fs.readFile(info.path, { encoding: "utf8" }, function (err, data) {
                     return err ? reject(err) : resolve(data);
                 });
