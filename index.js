@@ -1,16 +1,13 @@
 'use strict';
 
 var fs = require("fs");
-var path = require('path');
+var path = require("path");
 var temp = require("temp").track();
-var loaderUtils = require('loader-utils');
-var elmCompiler = require('node-elm-compiler');
-var yargs = require('yargs');
-
-var alreadyCompiledFiles = [];
+var loaderUtils = require("loader-utils");
+var elmCompiler = require("node-elm-compiler");
 
 var defaultOptions = {
-    forceWatch: false,
+    debug: false,
     optimize: false
 };
 
@@ -51,32 +48,6 @@ var isFlagSet = function(args, flag) {
     return typeof args[flag] !== "undefined" && args[flag];
 };
 
-/* Figures out if webpack has been run in watch mode
-    This currently means either that the `watch` command was used
-    Or it was run via `webpack-dev-server`
-    */
-var isInWatchMode = function(){
-    // parse the argv given to run this webpack instance
-    var argv = yargs(process.argv)
-        .alias('w', 'watch')
-        .alias('stdin', 'watch-stdin')
-        .argv;
-
-    var hasWatchArg = isFlagSet(argv, 'watch');
-    var hasStdinArg = isFlagSet(argv, 'watch-stdin');
-
-    var hasWebpackServe = Array.prototype.filter.call(process.argv, function (arg) {
-        return arg.indexOf('webpack-serve') !== -1;
-    }).length > 0;
-
-    var hasWebpackDevServer = Array.prototype.filter.call(process.argv, function (arg) {
-        return arg.indexOf('webpack-dev-server') !== -1;
-    }).length > 0;
-
-
-    return hasWebpackServe || hasWebpackDevServer || hasWatchArg || hasStdinArg;
-};
-
 /* Takes a working dir, tries to read elm.json, then grabs all the modules from in there
 */
 var filesToWatch = function(cwd){
@@ -100,8 +71,7 @@ var dependenciesFor = function(resourcePath, files) {
 var findAllDependencies = function(files) {
     return Promise.all(files.map(
         function(f) { return elmCompiler.findAllDependencies(f) }
-    ))
-        .then(flatten);
+    )).then(flatten);
 }
 
 module.exports = function() {
@@ -123,9 +93,11 @@ module.exports = function() {
 
     var promises = [];
 
+    var compiler = this._compiler;
+
     // we only need to track deps if we are in watch mode
     // otherwise, we trust elm to do it's job
-    if (options.forceWatch || isInWatchMode()){
+    if (compiler.options.watch) {
         // we can do a glob to track deps we care about if cwd is set
         if (typeof options.cwd !== "undefined" && options.cwd !== null){
             // watch elm.json
@@ -150,15 +122,6 @@ module.exports = function() {
         promises.push(dependencies);
     }
 
-    delete options.forceWatch
-
-    // If we are running in watch mode, and we have previously compiled
-    // the current file, then let the user know that `elm make` is running
-    // and can be slow
-    if (alreadyCompiledFiles.indexOf(resourcePath) > -1){
-        console.log('Started compiling Elm...');
-    }
-
     var compilation = compile(files, options)
         .then(function(v) { return { kind: 'success', result: v }; })
         .catch(function(v) { return { kind: 'error', error: v }; });
@@ -170,7 +133,6 @@ module.exports = function() {
             var output = results[results.length - 1]; // compilation output is always last
 
             if (output.kind === 'success') {
-                alreadyCompiledFiles.push(resourcePath);
                 callback(null, output.result);
             } else {
                 if (typeof output.error === 'string') {
