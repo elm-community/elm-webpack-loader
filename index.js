@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var fs = require("fs");
 var path = require("path");
@@ -6,18 +6,13 @@ var temp = require("temp").track();
 var loaderUtils = require("loader-utils");
 var elmCompiler = require("node-elm-compiler");
 
-var defaultOptions = {
-    debug: false,
-    optimize: false
-};
-
 var getFiles = function(options) {
     var files = options && options.files;
 
     if (files === undefined) return [this.resourcePath];
 
     if (!Array.isArray(files)) {
-        throw new Error('files option must be an array');
+        throw new Error("files option must be an array");
     }
 
     if (files.length === 0) {
@@ -28,11 +23,19 @@ var getFiles = function(options) {
     return files;
 };
 
-var getOptions = function() {
+var getOptions = function(mode) {
+    var defaultOptions = {
+        debug: mode === "development",
+        verbose: mode === "development",
+        optimize: mode === "production",
+    };
+
     var globalOptions = this.options
         ? this.options.elm || {}
         : this.query.elm || {};
+
     var loaderOptions = loaderUtils.getOptions(this) || {};
+
     return Object.assign({}, defaultOptions, globalOptions, loaderOptions);
 };
 
@@ -51,7 +54,7 @@ var isFlagSet = function(args, flag) {
 /* Takes a working dir, tries to read elm.json, then grabs all the modules from in there
 */
 var filesToWatch = function(cwd){
-    var readFile = fs.readFileSync(path.join(cwd, "elm.json"), 'utf8');
+    var readFile = fs.readFileSync(path.join(cwd, "elm.json"), "utf8");
     var elmPackage = JSON.parse(readFile);
 
     var paths = elmPackage["source-directories"].map(function(dir){
@@ -79,21 +82,22 @@ module.exports = function() {
 
     var callback = this.async();
     if (!callback) {
-        throw 'elm-webpack-loader currently only supports async mode.';
+        throw "elm-webpack-loader currently only supports async mode.";
     }
+
+    var compiler = this._compiler;
 
     // bind helper functions to `this`
     var addDependencies = _addDependencies.bind(this);
     var addDirDependency = _addDirDependency.bind(this);
     var emitError = this.emitError.bind(this);
 
-    var options = getOptions.call(this);
+    var options = getOptions.call(this, compiler.options.mode);
     var files = getFiles.call(this, options);
     var resourcePath = this.resourcePath;
 
     var promises = [];
 
-    var compiler = this._compiler;
 
     // we only need to track deps if we are in watch mode
     // otherwise, we trust elm to do it's job
@@ -113,18 +117,18 @@ module.exports = function() {
         var dependencies = dependenciesFor(resourcePath, files).then(function(dependencies){
             // add each dependency to the tree
             dependencies.map(addDependencies);
-            return { kind: 'success', result: true };
+            return { kind: "success", result: true };
         }).catch(function(v){
             emitError(v);
-            return { kind: 'error', error: v };
+            return { kind: "error", error: v };
         })
 
         promises.push(dependencies);
     }
 
     var compilation = compile(files, options)
-        .then(function(v) { return { kind: 'success', result: v }; })
-        .catch(function(v) { return { kind: 'error', error: v }; });
+        .then(function(v) { return { kind: "success", result: v }; })
+        .catch(function(v) { return { kind: "error", error: v }; });
 
     promises.push(compilation);
 
@@ -132,14 +136,14 @@ module.exports = function() {
         .then(function(results) {
             var output = results[results.length - 1]; // compilation output is always last
 
-            if (output.kind === 'success') {
+            if (output.kind === "success") {
                 callback(null, output.result);
             } else {
-                if (typeof output.error === 'string') {
+                if (typeof output.error === "string") {
                     output.error = new Error(output.error);
                 }
 
-                output.error.message = 'Compiler process exited with error ' + output.error.message;
+                output.error.message = "Compiler process exited with error " + output.error.message;
                 output.error.stack = null;
                 callback(output.error);
             }
@@ -154,14 +158,14 @@ module.exports = function() {
 // this was called compileToString
 // - altered to log output to console instead to retain formatting
 function compile(sources, options) {
-    var suffix = getSuffix(options.output, '.js');
+    var suffix = getSuffix(options.output, ".js");
     return new Promise(function (resolve, reject) {
         temp.open({ suffix: suffix }, function (err, info) {
             if (err) {
                 return reject(err);
             }
             options.output = info.path;
-            options.processOpts = { stdio: 'inherit' };
+            options.processOpts = { stdio: "inherit" };
 
             var compiler;
 
@@ -174,7 +178,7 @@ function compile(sources, options) {
 
             compiler.on("close", function (exitCode) {
                 if (exitCode !== 0) {
-                    return reject('Compilation failed');
+                    return reject("Compilation failed");
                 }
                 else if (options.verbose) {
                     console.log(output);
