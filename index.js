@@ -97,7 +97,6 @@ module.exports = function() {
 
     var promises = [];
 
-
     // we only need to track deps if we are in watch mode
     // otherwise, we trust elm to do it's job
     if (compiler.options.watch) {
