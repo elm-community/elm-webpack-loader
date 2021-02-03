@@ -21,7 +21,7 @@ module.exports = {
   },
 
   devServer: {
-    inline: true,
+    contentBase: path.join(__dirname, "src"),
     stats: 'errors-only'
   },
 
