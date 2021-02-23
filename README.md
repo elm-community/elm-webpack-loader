@@ -227,7 +227,7 @@ in the example.
 
 ## Revisions
 
-### 7.0.2
+### 8.0.0
 
 - Fix watching when using the dev server. Use `compiler.watching` instead of `compiler.options.watch` as the latter doesn't work with the dev server.
 
