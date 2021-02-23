@@ -8,7 +8,7 @@ module.exports = {
     rules: [{
         test: /\.html$/,
         exclude: /node_modules/,
-        loader: 'file-loader?name=[name].[ext]'
+        loader: 'file-loader'
       },
       {
         test: /\.elm$/,
@@ -21,7 +21,8 @@ module.exports = {
   },
 
   devServer: {
-    inline: true,
+    contentBase: path.join(__dirname, "src"),
     stats: 'errors-only'
-  }
+  },
+
 };

@@ -1,7 +1,7 @@
 module Main exposing (..)
 
-import Html exposing (text)
 import Hello.World exposing (hello)
+import Html exposing (text)
 
 
 main : Html.Html a

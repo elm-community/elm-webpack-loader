@@ -2,7 +2,7 @@
 
 [Webpack](https://webpack.js.org/) loader for the [Elm](http://elm-lang.org/) programming language.
 
-It is aware of Elm dependencies and tracks them. This means that in `--watch`
+It is aware of Elm dependencies and tracks them. This means that in watch
 mode, if you `require` an Elm module from a Webpack entry point, not only will
 that `.elm` file be watched for changes, but any other Elm modules it imports will
 be watched for changes as well.
@@ -226,6 +226,10 @@ in the example.
 ```
 
 ## Revisions
+
+### 7.0.2
+
+- Fix watching when using the dev server. Use `compiler.watching` instead of `compiler.options.watch` as the latter doesn't work with the dev server.
 
 ### 7.0.0
 
