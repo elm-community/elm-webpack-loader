@@ -151,6 +151,23 @@ Elm.Main.init({node: document.getElementById("main")});
 Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
 ```
 
+#### maxInstances (default `undefined`)
+
+You can add `maxInstances=8` to the loader:
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      maxInstances: 8
+    }
+  }
+  ...
+```
+
+Set a limit to the number of maxInstances of elm that can spawned.
+
 ##### Hot module reloading
 
 Hot module reloading is supported by installing [elm-hot-webpack-loader](https://github.com/klazuka/elm-hot-webpack-loader)
