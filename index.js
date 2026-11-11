@@ -166,9 +166,10 @@ function compile(sources, options) {
             options.processOpts = { stdio: "inherit" };
 
             var compiler;
-            sources = sources.map(f => `"${f}"`); //so paths with dashes don't error out
+
             try {
-                compiler = elmCompiler.compile(sources, options);
+                // Wrapped in quotes so paths with dashes don't error out
+                compiler = elmCompiler.compile(sources.map(f => `"${f}"`), options);
             }
             catch (compileError) {
                 return reject(compileError);
