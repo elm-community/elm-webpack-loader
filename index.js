@@ -6,6 +6,8 @@ var temp = require("temp").track();
 var loaderUtils = require("loader-utils");
 var elmCompiler = require("node-elm-compiler");
 
+var runningInstances = 0;
+
 var getFiles = function(options) {
     var files = options && options.files;
 
@@ -95,6 +97,14 @@ module.exports = function() {
     var files = getFiles.call(this, options);
     var resourcePath = this.resourcePath;
 
+    var maxInstances = options.maxInstances;
+
+    if (typeof maxInstances === "undefined"){
+      maxInstances = null;
+    } else {
+      delete options.maxInstances;
+    }
+
     var promises = [];
 
     // we only need to track deps if we are in watch mode
@@ -124,30 +134,43 @@ module.exports = function() {
         promises.push(dependencies);
     }
 
-    var compilation = compile(files, options)
-        .then(function(v) { return { kind: "success", result: v }; })
-        .catch(function(v) { return { kind: "error", error: v }; });
+    var intervalId;
 
-    promises.push(compilation);
+    var run = function() {
+      if (maxInstances !== null && runningInstances >= maxInstances) { return false };
+      runningInstances += 1;
+      clearInterval(intervalId);
+      
+      var compilation = compile(files, options)
+          .then(function(v) { runningInstances -= 1; return { kind: "success", result: v }; })
+          .catch(function(v) { runningInstances -= 1; return { kind: "error", error: v }; });
 
-    Promise.all(promises)
-        .then(function(results) {
-            var output = results[results.length - 1]; // compilation output is always last
+      promises.push(compilation);
 
-            if (output.kind === "success") {
-                callback(null, output.result);
-            } else {
-                if (typeof output.error === "string") {
-                    output.error = new Error(output.error);
-                }
+      Promise.all(promises)
+          .then(function(results) {
+              var output = results[results.length - 1]; // compilation output is always last
 
-                output.error.message = "Compiler process exited with error " + output.error.message;
-                output.error.stack = null;
-                callback(output.error);
-            }
-        }).catch(function(err){
-            callback(err);
-        });
+              if (output.kind === "success") {
+                  callback(null, output.result);
+              } else {
+                  if (typeof output.error === "string") {
+                      output.error = new Error(output.error);
+                  }
+
+                  output.error.message = "Compiler process exited with error " + output.error.message;
+                  output.error.stack = null;
+                  callback(output.error);
+              }
+          }).catch(function(err){
+              callback(err);
+          });
+
+    };
+
+    if (run() === false) {
+      intervalId = setInterval(run, 200);
+    }
 }
 
 
