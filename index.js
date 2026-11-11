@@ -163,7 +163,7 @@ function compile(sources, options) {
                 return reject(err);
             }
             options.output = info.path;
-            options.processOpts = { stdio: "inherit" };
+            options.processOpts = { stdio: ["inherit", "inherit", "pipe"] };
 
             var compiler;
 
@@ -174,9 +174,16 @@ function compile(sources, options) {
                 return reject(compileError);
             }
 
+            // Catch output from stderr so we can use it in `reject()`
+            var errorChunks = [];
+            compiler.stderr.on('data', function (data) { 
+              errorChunks.push(data);
+            });
+
             compiler.on("close", function (exitCode) {
                 if (exitCode !== 0) {
-                    return reject("Compilation failed");
+                    var errorText = Buffer.concat(errorChunks).toString();
+                    return reject("Compilation failed! " + errorText);
                 }
 
                 fs.readFile(info.path, { encoding: "utf8" }, function (err, data) {
