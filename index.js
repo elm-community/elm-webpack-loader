@@ -168,7 +168,8 @@ function compile(sources, options) {
             var compiler;
 
             try {
-                compiler = elmCompiler.compile(sources, options);
+                // Wrapped in quotes so paths with dashes don't error out
+                compiler = elmCompiler.compile(sources.map(f => `"${f}"`), options);
             }
             catch (compileError) {
                 return reject(compileError);
