@@ -26,6 +26,8 @@ Install the loader:
 npm install --save-dev elm-webpack-loader
 ```
 
+Node.js 22.15 or later is required.
+
 Add it to your [webpack module rules](https://webpack.js.org/configuration/module/#rule):
 
 ```js
