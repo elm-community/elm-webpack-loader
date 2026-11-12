@@ -36,6 +36,7 @@ var mock = function (source, query, opts, callback, watchMode, cwd) {
   var addedDirDependencies = [];
 
   var result = {
+    _compiler: { options: {} },
     loaders: [],
     loaderIndex: 0,
 
