@@ -10,10 +10,8 @@ os:
 
 env:
   matrix:
-    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=8
-    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=10
-    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=11
-    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=12
+    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=22
+    - ELM_VERSION=0.19.3-0 TARGET_NODE_VERSION=24
 
 before_install:
   - if [ ${TRAVIS_OS_NAME} == "osx" ];
@@ -26,7 +24,9 @@ install:
   - node --version
   - npm --version
   - npm install -g elm@$ELM_VERSION
-  - npm install
+  - npm ci
 
 script:
   - npm test
+  - npm ci --prefix example
+  - npm run build --prefix example

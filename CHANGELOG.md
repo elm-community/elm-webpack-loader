@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Require Node.js 22.15 or later, and test Node.js 22 and 24 in CI.
+- Update the test and example toolchains, including the webpack development server configuration.
+- Override `node-elm-compiler`'s vulnerable `cross-spawn` 6.0.5 pin with patched 6.0.6.
+
 ## 8.1.0
 
 - Add the optional `maxInstances` setting for limiting concurrent Elm compiler processes, defaulting to one to protect Elm's shared cache and limit memory use.
