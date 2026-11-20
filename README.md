@@ -227,6 +227,11 @@ in the example.
 
 ## Revisions
 
+### 8.0.1
+
+- Include Elm compiler diagnostics in webpack compilation errors.
+- Support Elm 0.19.2 and 0.19.3, and make Elm an optional dependency instead of a peer dependency.
+
 ### 8.0.0
 
 - Fix watching when using the dev server. Use `compiler.watching` instead of `compiler.options.watch` as the latter doesn't work with the dev server.

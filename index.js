@@ -176,7 +176,7 @@ function compile(sources, options) {
 
             // Catch output from stderr so we can use it in `reject()`
             var errorChunks = [];
-            compiler.stderr.on('data', function (data) { 
+            compiler.stderr.on('data', function (data) {
               errorChunks.push(data);
             });
 
