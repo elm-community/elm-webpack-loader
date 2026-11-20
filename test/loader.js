@@ -187,8 +187,13 @@ describe('async mode', function () {
     };
 
     var callback = function (err) {
-      assert.match(err.message, /parse error/i);
-      done();
+      try {
+        assert.match(err.message, /Bad\.elm/);
+        assert.match(err.message, /UNFINISHED MODULE DECLARATION/i);
+        done();
+      } catch (assertionError) {
+        done(assertionError);
+      }
     };
 
     context = mock(badSource, null, options, callback);
