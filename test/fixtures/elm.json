@@ -5,7 +5,7 @@
     ".",
     "../other_elm_source_dir"
   ],
-  "elm-version": "0.19.0",
+  "elm-version": "0.19.3",
   "dependencies": {
     "direct": {
       "elm/browser": "1.0.0",
