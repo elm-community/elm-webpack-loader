@@ -36,6 +36,7 @@ var mock = function (source, query, opts, callback, watchMode, cwd) {
   var addedDirDependencies = [];
 
   var result = {
+    _compiler: { options: {} },
     loaders: [],
     loaderIndex: 0,
 
@@ -72,8 +73,7 @@ var mock = function (source, query, opts, callback, watchMode, cwd) {
   }
 
   if (watchMode) {
-    result.isInWatchMode = function() { return true; };
-    result.argv = {watch : true};
+    result._compiler.watching = true;
   }
 
   return result;
