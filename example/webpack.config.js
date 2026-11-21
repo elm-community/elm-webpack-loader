@@ -20,9 +20,12 @@ module.exports = {
     ]
   },
 
+  stats: 'errors-only',
+
   devServer: {
-    contentBase: path.join(__dirname, "src"),
-    stats: 'errors-only'
+    static: {
+      directory: path.join(__dirname, "src")
+    }
   },
 
 };
