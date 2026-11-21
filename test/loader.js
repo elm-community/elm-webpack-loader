@@ -1,5 +1,6 @@
 var path = require('path');
 var crypto = require('crypto');
+var EventEmitter = require('events').EventEmitter;
 var assert = require('chai').assert;
 var compiler = require('node-elm-compiler');
 var loader = require('../index.js');
@@ -10,6 +11,8 @@ var goodSource = path.join(fixturesDir, 'Good.elm');
 var goodDependency = path.join(fixturesDir, 'GoodDependency.elm');
 var elmPackage = path.join(fixturesDir, 'elm.json');
 var otherElmSourceDir = path.join(__dirname, 'other_elm_source_dir');
+var dashedFixturesDir = path.join(__dirname, 'fixtures - with dashes');
+var dashedGoodSource = path.join(dashedFixturesDir, 'Good.elm');
 
 var toString = Object.prototype.toString;
 
@@ -111,6 +114,64 @@ describe('async mode', function () {
 
     context = mock(goodSource, null, options, callback);
     loader.call(context, goodSource);
+  });
+
+  it('compiles resources with dashes and spaces in their paths', function (done) {
+    var options = {
+      cwd: dashedFixturesDir
+    };
+
+    var callback = function (loaderErr, loaderResult) {
+      try {
+        assert.isNull(loaderErr);
+        assert.isString(loaderResult);
+        assert.isAbove(loaderResult.length, 0);
+        done();
+      } catch (assertionError) {
+        done(assertionError);
+      }
+    };
+
+    context = mock(dashedGoodSource, null, options, callback);
+    loader.call(context, dashedGoodSource);
+  });
+
+  it('quotes compiler source paths on Windows', function (done) {
+    var originalCompile = compiler.compile;
+    var originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+    var compilerSources;
+    var fakeCompiler = new EventEmitter();
+    fakeCompiler.stderr = new EventEmitter();
+
+    var restore = function () {
+      compiler.compile = originalCompile;
+      Object.defineProperty(process, 'platform', originalPlatform);
+    };
+
+    compiler.compile = function (sources) {
+      compilerSources = sources;
+      process.nextTick(function () { fakeCompiler.emit('close', 1); });
+      return fakeCompiler;
+    };
+    Object.defineProperty(process, 'platform', { value: 'win32' });
+
+    var callback = function () {
+      restore();
+      try {
+        assert.deepEqual(compilerSources, ['"' + goodSource + '"']);
+        done();
+      } catch (assertionError) {
+        done(assertionError);
+      }
+    };
+
+    context = mock(goodSource, null, { cwd: fixturesDir }, callback);
+    try {
+      loader.call(context, goodSource);
+    } catch (err) {
+      restore();
+      done(err);
+    }
   });
 
   it('does not add dependencies in normal mode', function (done) {
