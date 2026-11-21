@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.2
+
+- Fix Elm compilation on Windows when source paths contain spaces or dashes.
+- Refresh the README with a feature overview, quick start, and modern alternatives for new projects.
+- Move the release history to a dedicated changelog.
+
 ## 8.0.1
 
 - Include Elm compiler diagnostics in webpack compilation errors.
