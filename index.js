@@ -44,25 +44,8 @@ var _addDependencies = function(dependency) {
     this.addDependency(dependency);
 };
 
-var _addDirDependency = function(dirs){
-    dirs.forEach(this.addContextDependency.bind(this));
-};
-
 var isFlagSet = function(args, flag) {
     return typeof args[flag] !== "undefined" && args[flag];
-};
-
-/* Takes a working dir, tries to read elm.json, then grabs all the modules from in there
-*/
-var filesToWatch = function(cwd){
-    var readFile = fs.readFileSync(path.join(cwd, "elm.json"), "utf8");
-    var elmPackage = JSON.parse(readFile);
-
-    var paths = elmPackage["source-directories"].map(function(dir){
-        return path.join(cwd, dir);
-    });
-
-    return paths;
 };
 
 var dependenciesFor = function(resourcePath, files) {
@@ -90,7 +73,6 @@ module.exports = function() {
 
     // bind helper functions to `this`
     var addDependencies = _addDependencies.bind(this);
-    var addDirDependency = _addDirDependency.bind(this);
     var emitError = this.emitError.bind(this);
 
     var options = getOptions.call(this, compiler.options.mode);
@@ -98,24 +80,16 @@ module.exports = function() {
     var resourcePath = this.resourcePath;
 
     var promises = [];
+    var cache = compiler.options.cache;
+    var trackDependencies = compiler.watching ||
+        (cache && cache.type === "filesystem");
 
-    // we only need to track deps if we are in watch mode
-    // otherwise, we trust elm to do it's job
-    if (compiler.watching) {
-        // we can do a glob to track deps we care about if cwd is set
+    if (trackDependencies) {
         if (typeof options.cwd !== "undefined" && options.cwd !== null){
-            // watch elm.json
-            var elmPackage = path.join(options.cwd, "elm.json");
-            addDependencies(elmPackage);
-            var dirs = filesToWatch(options.cwd);
-            // watch all the dirs in elm.json
-            addDirDependency.bind(this)(dirs);
+            addDependencies(path.join(options.cwd, "elm.json"));
         }
 
-        // find all the deps, adding them to the watch list if we successfully parsed everything
-        // otherwise return an error which is currently ignored
         var dependencies = dependenciesFor(resourcePath, files).then(function(dependencies){
-            // add each dependency to the tree
             dependencies.map(addDependencies);
             return { kind: "success", result: true };
         }).catch(function(v){

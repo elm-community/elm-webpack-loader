@@ -12,6 +12,7 @@ var goodSource = path.join(fixturesDir, 'Good.elm');
 var goodDependency = path.join(fixturesDir, 'GoodDependency.elm');
 var elmPackage = path.join(fixturesDir, 'elm.json');
 var otherElmSourceDir = path.join(__dirname, 'other_elm_source_dir');
+var otherDependency = path.join(otherElmSourceDir, 'OtherDependency.elm');
 var dashedFixturesDir = path.join(__dirname, 'fixtures - with dashes');
 var dashedGoodSource = path.join(dashedFixturesDir, 'Good.elm');
 
@@ -191,22 +192,63 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
-  it('does add dependencies in watch mode', function (done) {
+  it('adds imported files from all source directories on each watch build', function (done) {
     var options = {
       cwd: fixturesDir
     };
 
+    var assertDependencies = function (loaderContext) {
+      assert.equal(loaderContext.addedDependencies().length, 3);
+      assert.include(loaderContext.addedDependencies(), elmPackage);
+      assert.include(loaderContext.addedDependencies(), goodDependency);
+      assert.include(loaderContext.addedDependencies(), otherDependency);
+      assert.equal(loaderContext.addedDirDependencies().length, 0);
+    };
+
     process.argv = [ "--watch" ];
-    var callback = function () {
-      assert.equal(context.addedDependencies().length, 2);
-      assert.include(context.addedDependencies(), elmPackage);
-      assert.equal(context.addedDirDependencies().length, 2);
-      assert.include(context.addedDirDependencies(), fixturesDir);
-      assert.include(context.addedDirDependencies(), otherElmSourceDir);
-      done();
+    var callback = function (loaderErr) {
+      if (loaderErr) return done(loaderErr);
+
+      try {
+        assertDependencies(context);
+      } catch (assertionError) {
+        return done(assertionError);
+      }
+
+      context = mock(goodSource, null, options, function (secondLoaderErr) {
+        if (secondLoaderErr) return done(secondLoaderErr);
+
+        try {
+          assertDependencies(context);
+          done();
+        } catch (assertionError) {
+          done(assertionError);
+        }
+      }, true);
+      loader.call(context, goodSource);
     };
 
     context = mock(goodSource, null, options, callback, true);
+    loader.call(context, goodSource);
+  });
+
+  it('adds file dependencies with webpack filesystem caching', function (done) {
+    var options = {
+      cwd: fixturesDir
+    };
+
+    process.argv = [];
+    var callback = function () {
+      assert.equal(context.addedDependencies().length, 3);
+      assert.include(context.addedDependencies(), elmPackage);
+      assert.include(context.addedDependencies(), goodDependency);
+      assert.include(context.addedDependencies(), otherDependency);
+      assert.equal(context.addedDirDependencies().length, 0);
+      done();
+    };
+
+    context = mock(goodSource, null, options, callback);
+    context._compiler.options.cache = { type: 'filesystem' };
     loader.call(context, goodSource);
   });
 
