@@ -168,8 +168,10 @@ function compile(sources, options) {
             var compiler;
 
             try {
-                // Wrapped in quotes so paths with dashes don't error out
-                compiler = elmCompiler.compile(sources.map(f => `"${f}"`), options);
+                var compilerSources = process.platform === "win32"
+                    ? sources.map(function(f) { return '"' + f + '"'; })
+                    : sources;
+                compiler = elmCompiler.compile(compilerSources, options);
             }
             catch (compileError) {
                 return reject(compileError);
