@@ -3,6 +3,7 @@
 ## 8.0.3
 
 - Serialize Elm compilations to prevent `elm-stuff` cache corruption during parallel webpack builds.
+- Declare `temp` as a direct dependency instead of relying on other packages to provide it.
 
 ## 8.0.2
 
