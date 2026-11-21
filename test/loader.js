@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 var crypto = require('crypto');
 var EventEmitter = require('events').EventEmitter;
 var assert = require('chai').assert;
@@ -259,6 +260,91 @@ describe('async mode', function () {
 
     context = mock(badSource, null, options, callback);
     loader.call(context, badSource);
+  });
+
+  it('serializes compiler processes and continues after errors', function (done) {
+    this.timeout(2000);
+
+    var originalCompile = compiler.compile;
+    var processes = [];
+    var callbacks = [];
+    var finished = false;
+
+    var finish = function (err) {
+      if (finished) return;
+      finished = true;
+      compiler.compile = originalCompile;
+      done(err);
+    };
+
+    var complete = function (label, err) {
+      if (err) return finish(err);
+      callbacks.push(label);
+      if (callbacks.length === 3) {
+        try {
+          assert.deepEqual(callbacks.sort(), ['first', 'second', 'third']);
+          assert.lengthOf(processes, 3);
+          finish();
+        } catch (assertionError) {
+          finish(assertionError);
+        }
+      }
+    };
+
+    compiler.compile = function (sources, options) {
+      var child = new EventEmitter();
+      child.stderr = new EventEmitter();
+      var index = processes.length;
+      processes.push(child);
+
+      process.nextTick(function () {
+        try {
+          assert.lengthOf(processes, index + 1);
+          if (index === 1) {
+            child.stderr.emit('data', Buffer.from('simulated failure'));
+            child.emit('close', 1);
+            return;
+          }
+          fs.writeFileSync(options.output, index === 0 ? 'first' : 'third');
+          child.emit('close', 0);
+        } catch (assertionError) {
+          finish(assertionError);
+        }
+      });
+
+      return child;
+    };
+
+    loader.call(mock(goodSource, null, { cwd: fixturesDir }, function (err, result) {
+      try {
+        assert.isNull(err);
+        assert.equal(result, 'first');
+        complete('first');
+      } catch (assertionError) {
+        complete('first', assertionError);
+      }
+    }));
+
+    loader.call(mock(goodSource, null, { cwd: fixturesDir }, function (err) {
+      try {
+        assert.isPrototypeOf(err, Error);
+        assert.include(err.message, 'Compilation failed! simulated failure');
+        assert.notInclude(err.message, 'releaseLock');
+        complete('second');
+      } catch (assertionError) {
+        complete('second', assertionError);
+      }
+    }));
+
+    loader.call(mock(goodSource, null, { cwd: fixturesDir }, function (err, result) {
+      try {
+        assert.isNull(err);
+        assert.equal(result, 'third');
+        complete('third');
+      } catch (assertionError) {
+        complete('third', assertionError);
+      }
+    }));
   });
 
 });

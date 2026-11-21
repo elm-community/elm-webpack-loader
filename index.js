@@ -6,8 +6,7 @@ var temp = require("temp").track();
 var loaderUtils = require("loader-utils");
 var elmCompiler = require("node-elm-compiler");
 
-let elmCompilerSingleton = Promise.resolve();
-
+var compilerQueue = Promise.resolve();
 
 var getFiles = function(options) {
     var files = options && options.files;
@@ -127,23 +126,9 @@ module.exports = function() {
         promises.push(dependencies);
     }
 
-
-    var compilation = aquireLock()
-        .then(releaseLock => 
-            new Promise((resolve, reject) => 
-                compile(files, options)
-                        .then(v => resolve({v, releaseLock}))
-                        .catch(e => reject(e))
-                )
-        )
-        .then(function({v, releaseLock}) { 
-            releaseLock();
-            return { kind: "success", result: v }; 
-        })
-        .catch(function({v, releaseLock}) { 
-            releaseLock()
-            return { kind: "error", error: v }; 
-        });
+    var compilation = compileInQueue(files, options)
+        .then(function(v) { return { kind: "success", result: v }; })
+        .catch(function(v) { return { kind: "error", error: v }; });
 
     promises.push(compilation);
 
@@ -165,6 +150,16 @@ module.exports = function() {
         }).catch(function(err){
             callback(err);
         });
+}
+
+
+function compileInQueue(sources, options) {
+    var compilation = compilerQueue.then(function() {
+        return compile(sources, options);
+    });
+
+    compilerQueue = compilation.then(function() {}, function() {});
+    return compilation;
 }
 
 
@@ -242,27 +237,4 @@ function remove(condemned, items) {
     return items.filter(function(item) {
         return item !== condemned;
     });
-}
-
-
-// CONCURRENCY STUFF??
-
-/**
- * The Elm compiler may only run once in the same folder at any given moment.
- * If it runs multiple time, it will corrupt the elm-stuff folder for the other Elm compiler
- * processes.
- *
- * This lock guarantees the sequential compilation of all Elm files.
- */
-function aquireLock() {
-    let release;
-    const before = elmCompilerSingleton;
-    elmCompilerSingleton = new Promise((resolve) => {
-        release = resolve;
-    });
-    return new Promise((resolve, reject) => 
-        before
-            .then(() => resolve(release))
-            .catch(e => reject(e))
-    )
 }

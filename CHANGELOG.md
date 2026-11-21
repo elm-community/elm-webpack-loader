@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.3
+
+- Serialize Elm compilations to prevent `elm-stuff` cache corruption during parallel webpack builds.
+
 ## 8.0.2
 
 - Fix Elm compilation on Windows when source paths contain spaces or dashes.
