@@ -1,23 +1,33 @@
-# Elm loader [![Version](https://img.shields.io/npm/v/elm-webpack-loader.svg)](https://www.npmjs.com/package/elm-webpack-loader) [![Travis build Status](https://travis-ci.org/elm-community/elm-webpack-loader.svg?branch=master)](http://travis-ci.org/elm-community/elm-webpack-loader) 
+# Elm webpack loader
 
-[Webpack](https://webpack.js.org/) loader for the [Elm](http://elm-lang.org/) programming language.
+[![npm version](https://img.shields.io/npm/v/elm-webpack-loader.svg?style=for-the-badge)](https://www.npmjs.com/package/elm-webpack-loader) [![Matrix](https://img.shields.io/matrix/elm-dev%3Amatrix.org?style=for-the-badge)](https://matrix.to/#/#elm-dev:matrix.org)
+[![build status](https://img.shields.io/travis/com/elm-community/elm-webpack-loader?branch=master&style=for-the-badge)](https://app.travis-ci.com/elm-community/elm-webpack-loader)
+[![license](https://img.shields.io/npm/l/elm-webpack-loader.svg?style=for-the-badge)](https://github.com/elm-community/elm-webpack-loader/blob/master/LICENSE)
 
-It is aware of Elm dependencies and tracks them. This means that in watch
-mode, if you `require` an Elm module from a Webpack entry point, not only will
-that `.elm` file be watched for changes, but any other Elm modules it imports will
-be watched for changes as well.
+> Compile [Elm](https://elm-lang.org/) applications with [webpack](https://webpack.js.org/).
 
-## Installation
+- 🔍 **Dependency-aware watch mode** rebuilds when imported Elm modules change.
+- ⚙️ **Sensible defaults** enable the debugger in development and optimizations in production.
+- 🔥 **Hot module reloading** works with `elm-hot-webpack-loader`.
+- 🩺 **Compiler diagnostics** appear directly in webpack's error output.
+
+> [!IMPORTANT]
+> **For new projects, consider a modern alternative.**
+>
+> - **Pure Elm:** [elm-watch](https://lydell.github.io/elm-watch/)
+> - **Mixed language/framework projects:** [vite-plugin-elm-watch](https://github.com/ryannhg/vite-plugin-elm-watch) or [vite-plugin-elm](https://github.com/hmsk/vite-plugin-elm)
+
+Elm webpack loader connects the Elm compiler to webpack. It tracks Elm module imports, so watch mode rebuilds your application when any imported module changes—not just when the entry module changes.
+
+## Quick start
+
+Install the loader:
 
 ```sh
-$ npm install --save elm-webpack-loader
+npm install --save-dev elm-webpack-loader
 ```
 
-## Usage
-
-Documentation: [rules](https://webpack.js.org/configuration/module/#rule)
-
-`webpack.config.js`:
+Add it to your [webpack module rules](https://webpack.js.org/configuration/module/#rule):
 
 ```js
 module.exports = {
@@ -34,11 +44,21 @@ module.exports = {
 };
 ```
 
-See the [examples](#example) section below for the complete webpack configuration.
+Import your Elm module and initialize the application:
 
-### Options
+```js
+const { Elm } = require('./Main.elm');
 
-#### cwd (default null) *Recommended*
+Elm.Main.init({
+  node: document.getElementById('main')
+});
+```
+
+See the [example](#example) for a complete project or configure the [loader options](#options) below.
+
+## Options
+
+### cwd (default null) *Recommended*
 
 You can add `cwd=elmSource` to the loader:
 
@@ -59,9 +79,9 @@ will cause the compiler to look for **all** elm source files in the specified di
 approach is recommended as it allows the compile to watch elm.json as well as every file
 in the source directories.
 
-#### Optimize (default is true in production mode)
+### Optimize (default is `true` in production mode)
 
-Set this to true to compile bundle in optimized mode. See <https://elm-lang.org/0.19.0/optimize> for more information.
+Set this to `true` to compile bundle in optimized mode. See <https://elm-lang.org/0.19.3/optimize> for more information.
 
 ```js
   ...
@@ -74,9 +94,9 @@ Set this to true to compile bundle in optimized mode. See <https://elm-lang.org/
   ...
 ```
 
-#### Debug (default is true in development mode)
+### Debug (default is true in development mode)
 
-Set this to true to enable Elm's time traveling debugger. 
+Set this to true to enable Elm's time traveling debugger.
 
 ```js
   ...
@@ -89,7 +109,7 @@ Set this to true to enable Elm's time traveling debugger.
   ...
 ```
 
-#### RuntimeOptions (default `undefined`)
+### RuntimeOptions (default `undefined`)
 
 This allows you to control aspects of how `elm make` runs with [GHC Runtime Options](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime_control.html).
 
@@ -113,7 +133,7 @@ with some additional flags to give it more memory, `e.g. -A128M -H128M -n8m`.
   ...
 ```
 
-#### Files (default - path to 'required' file)
+### Files (default - path to 'required' file)
 
 elm make allows you to specify multiple modules to be combined into a single bundle
 
@@ -140,6 +160,7 @@ module: {
   ]
 }
 ```
+
 (Note: It's only possible to pass array options when using the object style of loader configuration.)
 
 You're then able to use this with
@@ -151,7 +172,26 @@ Elm.Main.init({node: document.getElementById("main")});
 Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
 ```
 
-##### Hot module reloading
+### Upstream options
+
+All options are sent down as an `options` object to node-elm-compiler. For example, you can
+explicitly pick the local `elm` binary by setting the option `pathToElm`:
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      pathToElm: 'node_modules/.bin/elm'
+    }
+  }
+  ...
+```
+
+For a list all possible options,
+[consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/3fde73d/index.js#L12-L23).
+
+## Hot module reloading
 
 Hot module reloading is supported by installing [elm-hot-webpack-loader](https://github.com/klazuka/elm-hot-webpack-loader)
 and adding it to your list of loaders. It should look something like this:
@@ -173,29 +213,7 @@ module: {
 
 **IMPORTANT**: `elm-hot-webpack-loader` must be placed in the list immediately *before* `elm-webpack-loader`.
 
-
-#### Upstream options
-
-All options are sent down as an `options` object to node-elm-compiler. For example, you can
-explicitly pick the local `elm` binary by setting the option `pathToElm`:
-
-```js
-  ...
-  use: {
-    loader: 'elm-webpack-loader',
-    options: {
-      pathToElm: 'node_modules/.bin/elm'
-    }
-  }
-  ...
-```
-
-For a list all possible options,
-[consult the source](https://github.com/rtfeldman/node-elm-compiler/blob/3fde73d/index.js#L12-L23).
-
-## Notes
-
-### Example
+## Example
 
 You can find an example in the `example` folder.
 To run:
@@ -211,7 +229,7 @@ You can run the webpack dev server with: `npm run dev`
 
 For a full featured example project that uses elm-webpack-loader see [pmdesgn/elm-webpack-starter](https://github.com/pmdesgn/elm-webpack-starter) .
 
-### noParse
+## noParse
 
 Webpack can complain about precompiled files (files compiled by `elm make`).
 You can silence this warning with
@@ -225,93 +243,6 @@ in the example.
   }
 ```
 
-## Revisions
+## Changelog
 
-### 8.0.1
-
-- Include Elm compiler diagnostics in webpack compilation errors.
-- Support Elm 0.19.2 and 0.19.3, and make Elm an optional dependency instead of a peer dependency.
-
-### 8.0.0
-
-- Fix watching when using the dev server. Use `compiler.watching` instead of `compiler.options.watch` as the latter doesn't work with the dev server.
-
-### 7.0.0
-
-- Logs build output directly to stdout to retain formatting.
-- Remove stack trace for errors, as they're never relevant.
-- `optimize` and `debug` flags are now set by default depending on the webpack mode.
-- Removed several options which provide little benefit.
-- Reduced number of dependencies.
-
-### 6.0.0
-
-- Elm is now a peer dependency.
-- Documentation fixes.
-
-### 5.0.0
-
-- Support for Elm 0.19, drops support for Elm 0.18.
-
-### 4.3.1
-
-- Fix a bug where maxInstances might end up being higher than expected
-
-### 4.3.0
-
-- Set maxInstances to 1
-- Patch watching behaviour
-- Add `forceWatch` to force watch mode
-
-### 4.2.0
-
-Make live reloading work more reliably
-
-### 4.1.0
-
-Added `maxInstances` for limiting of instances
-
-### 4.0.0
-
-Watching is now done based on elm-package.json, faster startup time via @eeue56
-
-### 3.1.0
-
-Add support for `--debug` via `node-elm-compiler`
-
-### 3.0.6
-
-Allow version bumps of node-elm-compiler.
-
-### 3.0.5
-
-Upgrade to latest node-elm-compiler, which fixes some dependency tracking issues.
-
-### 3.0.4
-
-Fix potential race condition between dependency checking and compilation.
-
-### 3.0.3
-
-Use node-elm-compiler 4.0.1+ for important bugfix.
-
-### 3.0.2
-
-Use node-elm-compiler 4.0.0+
-
-### 3.0.1
-
-Pass a real error object to webpack on failures.
-
-### 3.0.0
-
-Support Elm 0.17, and remove obsolete `appendExport` option.
-
-### 2.0.0
-
-Change `warn` to be a pass-through compiler flag rather than a way to specify
-logging behavior.
-
-### 1.0.0
-
-Initial stable release.
+See [CHANGELOG.md](CHANGELOG.md) for the release history.
