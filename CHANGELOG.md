@@ -8,6 +8,7 @@
 - Avoid rebuilding unrelated Elm modules in watch mode.
 - Use webpack's native loader-options API when available, with a `loader-utils` fallback for older webpack versions.
 - Require `loader-utils` 2.0.4 and `node-elm-compiler` 5.0.6 or later, including the `loader-utils` prototype-pollution fix.
+- Correct the multiple-entry example to use Elm 0.19's named export and explicit `.elm` import.
 
 ## 8.0.2
 

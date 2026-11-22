@@ -166,7 +166,7 @@ module: {
 You're then able to use this with
 
 ```js
-import Elm from "./elm/Main";
+import { Elm } from "./elm/Main.elm";
 
 Elm.Main.init({node: document.getElementById("main")});
 Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
