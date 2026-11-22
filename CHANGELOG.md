@@ -6,6 +6,7 @@
 - Declare `temp` as a direct dependency instead of relying on other packages to provide it.
 - Track Elm file dependencies in watch mode and with webpack filesystem caching so changes invalidate stale output.
 - Avoid rebuilding unrelated Elm modules in watch mode.
+- Use webpack's native loader-options API when available, with a `loader-utils` fallback for older webpack versions.
 
 ## 8.0.2
 
