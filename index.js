@@ -6,7 +6,8 @@ var temp = require("temp").track();
 var loaderUtils = require("loader-utils");
 var elmCompiler = require("node-elm-compiler");
 
-var compilerQueue = Promise.resolve();
+var compilerQueue = [];
+var runningInstances = 0;
 
 var getFiles = function(options) {
     var files = options && options.files;
@@ -81,6 +82,14 @@ module.exports = function() {
     var files = getFiles.call(this, options);
     var resourcePath = this.resourcePath;
 
+    var maxInstances = options.maxInstances;
+    if (typeof maxInstances === "undefined") {
+        maxInstances = 1;
+    } else if (!Number.isInteger(maxInstances) || maxInstances < 1) {
+        throw new Error("maxInstances option must be a positive integer");
+    }
+    delete options.maxInstances;
+
     var promises = [];
     var cache = compiler.options.cache;
     var trackDependencies = compiler.watching ||
@@ -102,7 +111,7 @@ module.exports = function() {
         promises.push(dependencies);
     }
 
-    var compilation = compileInQueue(files, options)
+    var compilation = compileInQueue(files, options, maxInstances)
         .then(function(v) { return { kind: "success", result: v }; })
         .catch(function(v) { return { kind: "error", error: v }; });
 
@@ -129,13 +138,40 @@ module.exports = function() {
 }
 
 
-function compileInQueue(sources, options) {
-    var compilation = compilerQueue.then(function() {
-        return compile(sources, options);
+function compileInQueue(sources, options, maxInstances) {
+    return new Promise(function(resolve, reject) {
+        compilerQueue.push({
+            sources: sources,
+            options: options,
+            maxInstances: maxInstances,
+            resolve: resolve,
+            reject: reject
+        });
+        runCompilerQueue();
     });
+}
 
-    compilerQueue = compilation.then(function() {}, function() {});
-    return compilation;
+function runCompilerQueue() {
+    while (compilerQueue.length > 0) {
+        var next = compilerQueue[0];
+        if (runningInstances >= next.maxInstances) return;
+
+        compilerQueue.shift();
+        startCompilation(next);
+    }
+}
+
+function startCompilation(job) {
+    runningInstances += 1;
+    compile(job.sources, job.options).then(function(result) {
+        runningInstances -= 1;
+        job.resolve(result);
+        runCompilerQueue();
+    }, function(error) {
+        runningInstances -= 1;
+        job.reject(error);
+        runCompilerQueue();
+    });
 }
 
 
