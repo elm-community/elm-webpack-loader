@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.1.0
+
+- Add the optional `maxInstances` setting for limiting concurrent Elm compiler processes, defaulting to one to protect Elm's shared cache and limit memory use.
+- Document how to mount a `Browser.element` program into a target element without modifying generated JavaScript.
+- Use portable Markdown for the modern-alternatives notice so it renders consistently on GitHub and npm.
+
 ## 8.0.3
 
 - Serialize Elm compilations to prevent `elm-stuff` cache corruption, cold-cache first-build races, and Windows memory exhaustion during parallel webpack builds.
