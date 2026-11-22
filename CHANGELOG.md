@@ -2,11 +2,12 @@
 
 ## 8.0.3
 
-- Serialize Elm compilations to prevent `elm-stuff` cache corruption during parallel webpack builds.
+- Serialize Elm compilations to prevent `elm-stuff` cache corruption, cold-cache first-build races, and Windows memory exhaustion during parallel webpack builds.
 - Declare `temp` as a direct dependency instead of relying on other packages to provide it.
-- Track Elm file dependencies in watch mode and with webpack filesystem caching so changes invalidate stale output.
+- Track Elm file dependencies in watch mode and with webpack filesystem caching so changes, including `exposing`-list edits, invalidate stale output.
 - Avoid rebuilding unrelated Elm modules in watch mode.
 - Use webpack's native loader-options API when available, with a `loader-utils` fallback for older webpack versions.
+- Require `loader-utils` 2.0.4 and `node-elm-compiler` 5.0.6 or later, including the `loader-utils` prototype-pollution fix.
 
 ## 8.0.2
 
