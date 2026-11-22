@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 9.0.0
 
 - Require Node.js 22.15 or later, and test Node.js 22 and 24 in CI.
 - Update the test and example toolchains, including the webpack development server configuration.

@@ -11,7 +11,7 @@
 - 🔥 **Hot module reloading** works with `elm-hot-webpack-loader`.
 - 🩺 **Compiler diagnostics** appear directly in webpack's error output.
 
-> ## **ℹ️ NOTE:** For new projects, consider a modern alternative.
+> ## **ℹ️ NOTE:** For new projects, consider a modern alternative
 >
 > - **Pure Elm:** [elm-watch](https://lydell.github.io/elm-watch/)
 > - **Mixed language/framework projects:** [vite-plugin-elm-watch](https://github.com/ryannhg/vite-plugin-elm-watch) or [vite-plugin-elm](https://github.com/hmsk/vite-plugin-elm)
@@ -67,7 +67,7 @@ See the [example](#example) for a complete project or configure the [loader opti
 
 ## Options
 
-### cwd (default null) *Recommended*
+### cwd (default null) _Recommended_
 
 You can add `cwd=elmSource` to the loader:
 
@@ -237,7 +237,7 @@ module: {
 }
 ```
 
-**IMPORTANT**: `elm-hot-webpack-loader` must be placed in the list immediately *before* `elm-webpack-loader`.
+**IMPORTANT**: `elm-hot-webpack-loader` must be placed in the list immediately _before_ `elm-webpack-loader`.
 
 ## Example
 
@@ -272,3 +272,67 @@ in the example.
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the release history.
+
+## ❤️ Projects we love
+
+Unaffiliated projects worth exploring:
+
+- 🌳 **Elm family**: [Awesome Elm](https://github.com/sporto/awesome-elm) — a community-curated
+  collection of Elm tutorials, libraries, tools, examples, and community resources.
+
+  _also [Elm companies](https://github.com/jah2488/elm-companies) and the
+  [#elm-dev Matrix space](https://matrix.to/#/#elm-dev:matrix.org) for team chat_
+- 🗄️ **Databases**: [Acadia](https://acadia.engineering/) — precise types, verified migrations, and
+  compile-time-checked database programming for Elm, with the goal of sustainably funding Elm
+  development.
+
+  _also [mnestic](https://www.mnesticdb.com/) — an embedded Datalog database combining graph traversal,
+  vector and keyword search, and historical queries._
+- ⌨️ **Editors**: [Lapce](https://lap.dev/lapce/) — a fast, native Rust editor with GPU acceleration,
+  built-in LSP and Tree-sitter support, remote development, and efficient [rope-based text storage](https://xi-editor.io/docs/rope_science_00.html).
+
+  _also [Helix](https://helix-editor.com/) — a terminal-based modal editor with [Kakoune-inspired
+  multiple selections](https://kakoune.org/why-kakoune/why-kakoune.html), Tree-sitter integration,
+  and built-in language-server support._
+- 🔄 **Version-controlled data and file sync**: [git-annex](https://git-annex.branchable.com/) —
+  manage and sync large files with Git without storing their contents in Git, including location
+  tracking, checksums, and encryption.
+
+  _also [DataLad](https://www.datalad.org/) — distributed data management built on Git and
+  `git-annex`, with provenance tracking, reproducibility, and nested datasets._
+- 🧩 **Local-first sync**: [Automerge](https://automerge.org/) — a network-agnostic CRDT library for
+  offline editing, automatic merging of concurrent changes, and version history, with
+  [Peritext](https://www.inkandswitch.com/peritext/) providing a collaborative rich-text data type.
+- 🗒️ **Local-first notes**: [SiYuan](https://b3log.org/siyuan/en/) — privacy-first, block-based notes
+  with bidirectional links, databases, Markdown support, and end-to-end encrypted multi-device sync.
+
+  _also [TypeCell](https://www.typecell.org/) — local-first, programmable documents with interactive
+  code blocks, a live TypeScript/React runtime, and Peritext-based rich-text collaboration._
+- 🔀 **Distributed version control**: [Pijul](https://pijul.org/) — a patch-based system built on a
+  mathematical theory of change commutation, with first-class conflicts and partial clones.
+- 🧮 **Programming languages**: [Unison](https://www.unison-lang.org/) — a functional language that
+  identifies definitions by content hash, with structured refactoring, type-based search, durable
+  storage, and distributed computation.
+
+  _also [Idris](https://idris-lang.org/) — a dependently typed language for
+  [type-driven development](https://kevinmahoney.co.uk/articles/tests-vs-types/), with first-class
+  types, compiler-checked program properties, and a self-hosted compiler._
+- 🌐 **Internet architecture**: [Named Data Networking (NDN)](https://named-data.net/) — a
+  [data-centric network architecture](https://101.named-data.net/) that names and secures data
+  directly, with stateful forwarding and in-network caching.
+- 📚 **Knowledge bases**: [Ownly](https://ownly.work/) — decentralized collaborative workspaces built
+  on Named Data Networking, with signed and encrypted updates and local copies of shared files.
+
+  _also [AppFlowy](https://appflowy.com/) — a self-hosted workspace for projects, wikis, documents,
+  and databases, with cross-device sync and control over your infrastructure and data._
+- 🗣️ **Internationalization (i18n)**: [Fluent](https://projectfluent.org/) — a proper localization
+  system by [Mozilla and used by others](https://github.com/heyakyra/fluent-companies) letting
+  translators use each language's full grammar, with asymmetric translations, plural and
+  grammatical-case handling, and reusable terms.
+- 🎨 **UX and vector design**: [Penpot](https://penpot.app/) — an open-source, web-based design and
+  prototyping platform with real-time collaboration, reusable components, CSS Grid and Flex layouts,
+  native SVG, and self-hosting.
+
+## Acknowledgements
+
+Maintenance and documentation used AI assistance from [Qwen.ai](https://qwen.ai/) and [Kimi.ai](https://www.kimi.ai/).
