@@ -11,8 +11,7 @@
 - 🔥 **Hot module reloading** works with `elm-hot-webpack-loader`.
 - 🩺 **Compiler diagnostics** appear directly in webpack's error output.
 
-> [!IMPORTANT]
-> **For new projects, consider a modern alternative.**
+> ## **ℹ️ NOTE:** For new projects, consider a modern alternative.
 >
 > - **Pure Elm:** [elm-watch](https://lydell.github.io/elm-watch/)
 > - **Mixed language/framework projects:** [vite-plugin-elm-watch](https://github.com/ryannhg/vite-plugin-elm-watch) or [vite-plugin-elm](https://github.com/hmsk/vite-plugin-elm)
@@ -44,6 +43,12 @@ module.exports = {
 };
 ```
 
+Add an element for Elm to replace:
+
+```html
+<div id="main"></div>
+```
+
 Import your Elm module and initialize the application:
 
 ```js
@@ -53,6 +58,8 @@ Elm.Main.init({
   node: document.getElementById('main')
 });
 ```
+
+For a `Browser.element` program, `node` replaces only that element, leaving the rest of `<body>` under your control; you do not need to modify the generated JavaScript. `Browser.document` and `Browser.application` intentionally manage the entire body instead.
 
 See the [example](#example) for a complete project or configure the [loader options](#options) below.
 
