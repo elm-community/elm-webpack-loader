@@ -118,6 +118,38 @@ describe('async mode', function () {
     loader.call(context, goodSource);
   });
 
+  it('uses native webpack loader options when available', function (done) {
+    var callback = function (loaderErr, loaderResult) {
+      if (loaderErr) return done(loaderErr);
+
+      compiler.compileToString([goodSource], {cwd: fixturesDir, optimize: true})
+        .then(function (compilerResult) {
+          assert.equal(hash(loaderResult), hash(compilerResult.toString()));
+          done();
+        }).catch(done);
+    };
+
+    context = mock(goodSource, null, null, callback);
+    context.getOptions = function () {
+      return { cwd: fixturesDir, optimize: true };
+    };
+    loader.call(context, goodSource);
+  });
+
+  it('falls back to loader-utils for loader options', function (done) {
+    var callback = function (loaderErr, loaderResult) {
+      if (loaderErr) return done(loaderErr);
+
+      compile(goodSource).then(function (compilerResult) {
+        assert.equal(hash(loaderResult), hash(compilerResult));
+        done();
+      }).catch(done);
+    };
+
+    context = mock(goodSource, 'cwd=' + encodeURIComponent(fixturesDir), null, callback);
+    loader.call(context, goodSource);
+  });
+
   it('compiles resources with dashes and spaces in their paths', function (done) {
     var options = {
       cwd: dashedFixturesDir

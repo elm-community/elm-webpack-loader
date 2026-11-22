@@ -33,9 +33,11 @@ var getOptions = function(mode) {
 
     var globalOptions = this.options
         ? this.options.elm || {}
-        : this.query.elm || {};
+        : this.query && this.query.elm || {};
 
-    var loaderOptions = loaderUtils.getOptions(this) || {};
+    var loaderOptions =
+        this.getOptions && this.getOptions() ||
+        loaderUtils.getOptions(this) || {};
 
     return Object.assign({}, defaultOptions, globalOptions, loaderOptions);
 };
