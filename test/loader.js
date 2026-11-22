@@ -336,6 +336,15 @@ describe('async mode', function () {
     loader.call(context, badSource);
   });
 
+  it('requires maxInstances to be a positive integer', function () {
+    [0, -1, 1.5, '1'].forEach(function (maxInstances) {
+      context = mock(goodSource, null, { cwd: fixturesDir, maxInstances: maxInstances }, function () {});
+      assert.throw(function () {
+        loader.call(context, goodSource);
+      }, /maxInstances option must be a positive integer/);
+    });
+  });
+
   it('serializes compiler processes and continues after errors', function (done) {
     this.timeout(2000);
 
@@ -419,6 +428,76 @@ describe('async mode', function () {
         complete('third', assertionError);
       }
     }));
+  });
+
+  it('allows concurrent compiler processes up to maxInstances', function (done) {
+    this.timeout(2000);
+
+    var originalCompile = compiler.compile;
+    var processes = [];
+    var active = 0;
+    var maxActive = 0;
+    var callbacks = [];
+    var finished = false;
+
+    var finish = function (err) {
+      if (finished) return;
+      finished = true;
+      compiler.compile = originalCompile;
+      done(err);
+    };
+
+    var complete = function (label, err, result) {
+      try {
+        assert.isNull(err);
+        assert.equal(result, label);
+        callbacks.push(label);
+        if (callbacks.length === 3) {
+          assert.deepEqual(callbacks.sort(), ['first', 'second', 'third']);
+          assert.lengthOf(processes, 3);
+          assert.equal(maxActive, 2);
+          finish();
+        }
+      } catch (assertionError) {
+        finish(assertionError);
+      }
+    };
+
+    compiler.compile = function (sources, options) {
+      var child = new EventEmitter();
+      child.stderr = new EventEmitter();
+      child.options = options;
+      var index = processes.length;
+      processes.push(child);
+      active += 1;
+      maxActive = Math.max(maxActive, active);
+      child.on('close', function () { active -= 1; });
+
+      try {
+        assert.isUndefined(options.maxInstances);
+        if (index === 1) {
+          fs.writeFileSync(processes[0].options.output, 'first');
+          process.nextTick(function () { processes[0].emit('close', 0); });
+        } else if (index === 2) {
+          fs.writeFileSync(processes[1].options.output, 'second');
+          fs.writeFileSync(processes[2].options.output, 'third');
+          process.nextTick(function () {
+            processes[1].emit('close', 0);
+            processes[2].emit('close', 0);
+          });
+        }
+      } catch (assertionError) {
+        finish(assertionError);
+      }
+
+      return child;
+    };
+
+    ['first', 'second', 'third'].forEach(function (label) {
+      loader.call(mock(goodSource, null, { cwd: fixturesDir, maxInstances: 2 }, function (err, result) {
+        complete(label, err, result);
+      }));
+    });
   });
 
 });

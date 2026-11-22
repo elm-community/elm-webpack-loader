@@ -172,6 +172,23 @@ Elm.Main.init({node: document.getElementById("main")});
 Elm.Path.To.OtherModule.init({node: document.getElementById("other")});
 ```
 
+### maxInstances (default `1`)
+
+Set the maximum number of Elm compiler processes that can run concurrently:
+
+```js
+  ...
+  use: {
+    loader: 'elm-webpack-loader',
+    options: {
+      maxInstances: 2
+    }
+  }
+  ...
+```
+
+The value must be a positive integer. The default of `1` prevents concurrent writes to Elm's shared `elm-stuff` cache and limits memory use. Only increase it when your projects and working directories support parallel compilation; higher limits can substantially increase memory consumption.
+
 ### Upstream options
 
 All options are sent down as an `options` object to node-elm-compiler. For example, you can
